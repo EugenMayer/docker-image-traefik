@@ -13,11 +13,22 @@ services:
       - 443:8443
       - 8000:8000 # admin backend unter http://localhost:8000
     volumes:
+      - certs: /mnt/certs
+      - filestorage: /mnt/filestorage
+      - acme: /mnt/acme
       # mount our docker socket so our docker container can be discovered
       - /var/run/docker.sock:/var/run/docker.sock
-  # upstream 1
-  web1:
+
+  web1: # upstream/frontend 1: http://web1.docker-image-traefik.docker.lan
     image: containous/whoami
-  # upstream 2
-  web2:
+
+  web2: # upstream/frontend 2: http://web2.docker-image-traefik.docker.lan
     image: containous/whoami
+
+volumes:
+  acme:
+    driver: local
+  certs:
+    driver: local
+  filestorage:
+    driver: local

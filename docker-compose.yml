@@ -7,7 +7,6 @@ services:
     container_name: traefik
     volumes:
       - ./tiller:/etc/tiller
-
     environment:
       TRAEFIK_ADMIN_ENABLE: 'true'
       TRAEFIK_HTTPS_ENABLE: 'true'
@@ -21,3 +20,11 @@ services:
       - 80:8080
       - 443:8443
       - 8000:8000
+
+volumes:
+  acme:
+    driver: local
+  certs:
+    driver: local
+  filestorage:
+    driver: local

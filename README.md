@@ -160,7 +160,23 @@ wget http://web2.docker-image-traefik.docker.lan
 See the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik) to run this in rancher. Fully integrated with rancher metadata
 
 
-## Contributions
+## Contributions / Development
+
+Start the container:
+
+```bash
+docker-compose up
+# connect to the container
+docker compose exec traefik bash
+
+# no modify whatever you need in tiller/templates/traefik.toml.erb or tiller/common.yaml locally, its mounted into the container
+# add your new ENV var with _env on the fly
+export TRAEFIK_YOURSTUFF_ENABLE=true
+# then run this to regenerate the configuration
+tiller -v -d 
+# check the result in /etc/traefik/traefik.toml
+cat /etc/traefik/traefik.toml
+```
 
 if you need more conifugration or you find something missing, please just create a PR while adding 
  - the section the [template](https://github.com/EugenMayer/docker-image-traefik/blob/master/tiller/templates/traefik.toml.erb) 

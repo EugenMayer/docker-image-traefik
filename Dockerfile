@@ -12,9 +12,14 @@ RUN mkdir -p /etc/traefik /mnt/acme /mnt/filestorage /mnt/certs /usr/local/bin /
 ADD tiller/ /etc/tiller/
 
 # volume to put your own certificates on and also our generated one (/mnt/certs/ssl.key | /mnt/certs/ssl.crt)
+# will also include /mnt/certs/docker.ca.crt | /mnt/certs/docker.crt |/mnt/certs/docker.key if you use remote swarm
 VOLUME /mnt/certs
+# will hold your custom file-based provider rules under /mnt/filestorage/rules.toml
 VOLUME /mnt/filestorage
+# will hold /mnt/acme/acme.json which are all your certificates you gathered using ACME
 VOLUME /mnt/acme
 
+# we are chaning the default entrypoint to proxy our conifuration before we start traefik using the official
+# /entrypoint.sh right at the end.
 ENTRYPOINT ["/configuration-entrypoint.sh"]
 
