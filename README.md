@@ -102,6 +102,7 @@ For configuring your endpoints with SSL Certificates, ACME is one of the powerfe
 - TRAEFIK_ACME_CHALLENGE="http"                         # Set http | dns to activate traefik acme challenge mode. 
 - TRAEFIK_ACME_CHALLENGE_HTTP_ENTRYPOINT="http"         # Set traefik acme http challenge entrypoint. [acme http challenge](https://docs.traefik.io/configuration/acme/#acmehttpchallenge)
 - TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER=""                # Set traefik acme dns challenge provider. You need to manually add configuration env variables accordingly the dns provider you use. [acme dns provider](https://docs.traefik.io/configuration/acme/#provider)
+- TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS=""             # Set you credentials needed for your DNS provider. Use a `key1=value1;key2=value2` syntax, e.g. for Cloudflare `CF_MAIL=aasdas@gmx.de;CF_API=adqweq121` - see [the traefik documentation](https://docs.traefik.io/configuration/acme/#provider) for the avaiable keys
 - TRAEFIK_ACME_CHALLENGE_DNS_DELAY=""                   # Set traefik acme dns challenge delayBeforeCheck. [acme dns challenge](https://docs.traefik.io/configuration/acme/#acmednschallenge)
 - TRAEFIK_ACME_EMAIL="test@traefik.io"					# Default email
 - TRAEFIK_ACME_ONHOSTRULE="true"						# ACME OnHostRule parameter
@@ -155,6 +156,17 @@ wget http://web1.docker-image-traefik.docker.lan
 wget http://web2.docker-image-traefik.docker.lan
 ```
 
+### ACME DNS-01
+Please set your `TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER` and `TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS` in `.env` and then run
+
+```
+docker-compose -f docker-compose-acmedns.yml up
+
+
+wget http://web1.docker-image-traefik.docker.lan
+wget http://web2.docker-image-traefik.docker.lan
+``` 
+
 ## Rancher
 
 See the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik) to run this in rancher. Fully integrated with rancher metadata
@@ -187,3 +199,7 @@ tiller -v -d
 cat /etc/traefik/traefik.toml
 ```
 
+## Credits
+
+Obviously most of the credits go to [Traefik](https://traefik.io) - cheer them up.
+And Once again to [tiller](https://github.com/markround/tiller) for dealing with the configuration template.

@@ -6,7 +6,15 @@ services:
     image: eugenmayer/traefik
     environment:
       TRAEFIK_DOCKER_ENABLE: 'true'
-      TRAEFIK_DOCKER_DOMAIN: 'docker.lan'
+      TRAEFIK_HTTPS_ENABLE: 'only'
+      TRAEFIK_ACME_ENABLE: 'true'
+      TRAEFIK_ACME_CHALLENGE: 'dns'
+      # TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER and TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS and TRAEFIK_DOCKER_DOMAIN should be defined in .env here
+      # see https://docs.traefik.io/configuration/acme/#provider
+      TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER: "${TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER}"
+      TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: "${TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS}"
+      # your domain
+      TRAEFIK_DOCKER_DOMAIN: ${YOUR_DOMAIN}
       TRAEFIK_ADMIN_ENABLE: 'true'
     ports:
       - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
@@ -19,16 +27,16 @@ services:
       # mount our docker socket so our docker container can be discovered
       - /var/run/docker.sock:/var/run/docker.sock
 
-  web1: # upstream/frontend 1: http://web1.docker-image-traefik.docker.lan
+  web1: # upstream/frontend 1: http://web1.docker-image-traefik.docker.${YOUR_DOMAIN}
     image: containous/whoami
 
-  web2: # upstream/frontend 2: http://web2.docker-image-traefik.docker.lan
+  web2: # upstream/frontend 2: http://web2.docker-image-traefik.docker.${YOUR_DOMAIN}
     image: containous/whoami
 
   web3: # upstream/frontend 3: http://foo.bar.lan
     image: containous/whoami
     labels:
-      traefik.frontend.rule: "Host: foo.bar.lan"
+      traefik.frontend.rule: "Host: foo.${YOUR_DOMAIN}"
 
 volumes:
   acme:
