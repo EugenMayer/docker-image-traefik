@@ -7,10 +7,16 @@ It bases on top of the official stable release of [Traefik](https://hub.docker.c
 
 The image is published under [eugenmayer/traefik](https://hub.docker.com/eugenmayer/traefik)
 
+## WAT its not
+
+Even though this image will make it a lot easier bootstrapping and running your traefik server in production with various providers, this is not a beginners-boilerplate.
+That said, all your traefik questions go the Forum/Slack and before that, read the [Traefik Documentation](https://docs.traefik.io/). I will not answer "how to do this in Traefik" questions in the issue queue.
+Thanks!
+
 ## Configuration
 
 To get an idea what you can configure using ENV var, see the listing below - the ENV variables should (hopefully) be self explanatory.
-In case they are not, check the [configuration template]() where you can see where they are used and can look those up in the [Traefik Documentation](https://docs.traefik.io/)
+In case they are not, check the [configuration template](https://github.com/EugenMayer/docker-image-traefik/blob/master/tiller/templates/traefik.toml.erb) where you can see where they are used and can look those up in the [Traefik Documentation](https://docs.traefik.io/)
 **Be aware** - even though the variables are named `env_XXX` in the `traefik.toml.erb` you use them as `XXX` in env - thats a [tiller](https://github.com/markround/tiller) internal
  
 For every variable you find in that listing like `TRAEFIK_DOCKER_ENABLE`, you add an en ENV variable to your image
@@ -54,20 +60,21 @@ make build
 
 ### Configuration Options ( ENV vars)
 
-Those are the avaiable env vars and their default
+Those are the avaiable env vars and their default. This should **not replace** the official [Traefik Documentation](https://docs.traefik.io/).
+Use this as a starting point / what you can do with this configuration, read the docs in any way.
 
 - TRAEFIK_LOG_LEVEL="INFO"								# Log level
 - TRAEFIK_DEBUG="false"									# Enable/disable debug mode
 - TRAEFIK_INSECURE_SKIP="false"							# Enable/disable InsecureSkipVerify parameter
-- TRAEFIK_LOG_FILE="/var/log/traefik.log"}		# Log file. Redirected to docker stdout.
-- TRAEFIK_ACCESS_FILE="/var/log/access.log"}	# Access file. Redirected to docker stdout.
-- TRAEFIK_TRUSTEDIPS=""                      # Enable [proxyProtocol](https://docs.traefik.io/configuration/entrypoints/#proxyprotocol) and [forwardHeaders](https://docs.traefik.io/configuration/entrypoints/#forwarded-header) for these IPs (eg: "172.0.0.0/16,192.168.0.1")
-- TRAEFIK_USAGE_ENABLE="false"              # Enable/disable send Traefik [anonymous usage collection](https://docs.traefik.io/basics/#collected-data) 
-- TRAEFIK_TIMEOUT_READ="0"      # respondingTimeouts [readTimeout](https://docs.traefik.io/configuration/commons/#responding-timeouts)
-- TRAEFIK_TIMEOUT_WRITE="0"     # respondingTimeouts [writeTimeout](https://docs.traefik.io/configuration/commons/#responding-timeouts)
-- TRAEFIK_TIMEOUT_IDLE="180"    # respondingTimeouts [idleTimeout](https://docs.traefik.io/configuration/commons/#responding-timeouts)
-- TRAEFIK_TIMEOUT_DIAL="30"     # forwardingTimeouts [dialTimeout](https://docs.traefik.io/configuration/commons/#forwarding-timeouts)
-- TRAEFIK_TIMEOUT_HEADER="0"    # forwardingTimeouts [responseHeaderTimeout](https://docs.traefik.io/configuration/commons/#forwarding-timeouts)
+- TRAEFIK_LOG_FILE="/var/log/traefik.log"}		        # Log file. Redirected to docker stdout.
+- TRAEFIK_ACCESS_FILE="/var/log/access.log"}	        # Access file. Redirected to docker stdout.
+- TRAEFIK_TRUSTEDIPS=""                                 # Enable [proxyProtocol](https://docs.traefik.io/configuration/entrypoints/#proxyprotocol) and [forwardHeaders](https://docs.traefik.io/configuration/entrypoints/#forwarded-header) for these IPs (eg: "172.0.0.0/16,192.168.0.1")
+- TRAEFIK_USAGE_ENABLE="false"                          # Enable/disable send Traefik [anonymous usage collection](https://docs.traefik.io/basics/#collected-data) 
+- TRAEFIK_TIMEOUT_READ="0"                              # respondingTimeouts [readTimeout](https://docs.traefik.io/configuration/commons/#responding-timeouts)
+- TRAEFIK_TIMEOUT_WRITE="0"                             # respondingTimeouts [writeTimeout](https://docs.traefik.io/configuration/commons/#responding-timeouts)
+- TRAEFIK_TIMEOUT_IDLE="180"                            # respondingTimeouts [idleTimeout](https://docs.traefik.io/configuration/commons/#responding-timeouts)
+- TRAEFIK_TIMEOUT_DIAL="30"                             # forwardingTimeouts [dialTimeout](https://docs.traefik.io/configuration/commons/#forwarding-timeouts)
+- TRAEFIK_TIMEOUT_HEADER="0"                            # forwardingTimeouts [responseHeaderTimeout](https://docs.traefik.io/configuration/commons/#forwarding-timeouts)
 
 #### Endpoint HTTP
 - TRAEFIK_HTTP_PORT=8080								# http port > 1024 due to run as non privileged user
@@ -90,6 +97,8 @@ Those are the avaiable env vars and their default
 - TRAEFIK_ADMIN_AUTH_USERS=""                           # Basic or digest users created with htpasswd or htdigest. 
 
 #### ACME
+For configuring your endpoints with SSL Certificates, ACME is one of the powerfeatures of [Traefik](https://traefik.io)
+
 - TRAEFIK_ACME_ENABLE="false"							# Enable/disable traefik ACME feature. [acme](https://docs.traefik.io/configuration/acme/)
 - TRAEFIK_ACME_CHALLENGE="http"                         # Set http | dns to activate traefik acme challenge mode. 
 - TRAEFIK_ACME_CHALLENGE_HTTP_ENTRYPOINT="http"         # Set traefik acme http challenge entrypoint. [acme http challenge](https://docs.traefik.io/configuration/acme/#acmehttpchallenge)
@@ -140,3 +149,11 @@ Those are the avaiable env vars and their default
 ### Rancher
 
 See the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik) to run this in rancher. Fully integrated with rancher metadata
+
+
+## Contributions
+
+if you need more conifugration or you find something missing, please just create a PR while adding 
+ - the section the [template](https://github.com/EugenMayer/docker-image-traefik/blob/master/tiller/templates/traefik.toml.erb) 
+ - adding the variable and the default value in the [listing here](https://github.com/EugenMayer/docker-image-traefik/blob/master/tiller/common.yaml#L13)
+ - and add it to the `README.md` under Configuration
