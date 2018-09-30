@@ -1,0 +1,19 @@
+# that is just a test-setup for development of the image and different tests - change it for your needs
+version: "2"
+
+services:
+  traefik:
+    image: eugenmayer/traefik
+    environment:
+      TRAEFIK_DOCKER_ENABLE: 'true'
+      TRAEFIK_DOCKER_DOMAIN: 'docker.lan'
+      TRAEFIK_ADMIN_ENABLE: 'true'
+    ports:
+      - 80:8080
+      - 443:8443
+      - 8000:8000
+    volumes:
+      # mount our docker socket so our docker container can be discovered
+      - /var/run/docker.sock:/var/run/docker.sock
+  whoami:
+    image: containous/whoami

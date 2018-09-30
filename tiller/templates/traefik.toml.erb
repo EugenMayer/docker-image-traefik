@@ -1,0 +1,186 @@
+<%
+trusted_ips=[]
+if env_TRAEFIK_TRUSTEDIPS != ""
+  trusted_ips= env_TRAEFIK_TRUSTEDIPS.split(',').to_s
+end
+
+default_entrypoints=["http"].to_s
+if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE)
+  default_entrypoints=%w(http https).to_s
+end
+%>
+
+debug = <%= env_TRAEFIK_DEBUG %>
+logLevel = "<%= env_TRAEFIK_LOG_LEVEL %>"
+InsecureSkipVerify = <%= env_TRAEFIK_INSECURE_SKIP %>
+defaultEntryPoints = <%= default_entrypoints %>
+sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
+
+[traefikLog]
+  filePath = "<%= env_TRAEFIK_LOG_FILE %> "
+
+[accessLog]
+  filePath = "<%= env_TRAEFIK_ACCESS_FILE %>"
+
+[respondingTimeouts]
+  readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
+  writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
+  idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
+
+[forwardingTimeouts]
+  dialTimeout = "<%= env_TRAEFIK_TIMEOUT_DIAL %>s"
+  responseHeaderTimeout = "<%= env_TRAEFIK_TIMEOUT_HEADER %>s"
+
+[entryPoints]
+  [entryPoints.http]
+    address = ":<%= env_TRAEFIK_HTTP_PORT %>"
+    compress = <%= env_TRAEFIK_HTTP_COMPRESSION %>
+  <%- if env_TRAEFIK_HTTPS_ENABLE == "only" -%>
+    [entryPoints.http.redirect]
+      entryPoint = "https"
+  <%- end -%>
+  <%- if trusted_ips.length > 0 -%>
+    [entryPoints.http.proxyProtocol]
+      trustedIPs: <%= trusted_ips %>
+    [entryPoints.http.forwardedHeaders]
+      trustedIPs: <%= trusted_ips %>
+  <%- end -%>
+#########################  tls endpoint configuration ##########################
+<% if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) -%>
+  # TLS endpoint
+  [entryPoints.https]
+    address = ":<%= env_TRAEFIK_HTTPS_PORT %>"
+    compress = <%= env_TRAEFIK_HTTPS_COMPRESSION %>
+    [entryPoints.https.tls]
+      MinVersion = "<%= env_TRAEFIK_HTTPS_MIN_TLS %>"
+  <%- if trusted_ips.length > 0 -%>
+    [entryPoints.https.proxyProtocol]
+      trustedIPs: <%= trusted_ips %>
+    [entryPoints.https.forwardedHeaders]
+      trustedIPs: <%= trusted_ips %>
+  <%- end -%>
+<%-end -%>
+#########################  /tls endpoint configuration/ ##########################
+#########################  admin backend configuration ##########################
+<%- if env_TRAEFIK_ADMIN_ENABLE == "true" -%>
+  [entryPoints.traefik]
+    address = ":<%= env_TRAEFIK_ADMIN_PORT %>"
+    compress = <%= env_TRAEFIK_HTTP_COMPRESSION %>
+   <%- if env_TRAEFIK_ADMIN_AUTH_USERS != "" -%>
+    [entryPoints.traefik.auth.<%= env_TRAEFIK_ADMIN_AUTH_METHOD %>
+      usersFile = "/etc/traefik/.htpasswd"
+   <%- end -%>
+   <%- if env_TRAEFIK_ADMIN_SSL == "true" -%>
+    [entryPoints.traefik.tls]
+      MinVersion = "<%= env_TRAEFIK_HTTPS_MIN_TLS %>"
+      [[entryPoints.traefik.tls.certificates]]
+      certFile = "<%= env_TRAEFIK_ADMIN_SSL_CERT_FILE %>"
+      keyFile = "<%= env_TRAEFIK_ADMIN_SSL_KEY_FILE %>"
+   <%- end -%>
+
+[api]
+  entryPoint = "traefik"
+  dashboard = true
+  debug = <%= env_TRAEFIK_DEBUG %>
+  [api.statistics]
+    RecentErrors = <%= env_TRAEFIK_ADMIN_STATISTICS %>
+
+[rest]
+  entryPoint = "traefik"
+
+[ping]
+  entryPoint = "traefik"
+<% end -%>
+#########################  /admin backend configuration/ ##########################
+#########################  acme ###########################
+<%- if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) && env_TRAEFIK_ACME_ENABLE == "true" -%>
+[acme]
+  email = "<%= env_TRAEFIK_ACME_EMAIL %>"
+  storage =  "<%= env_TRAEFIK_ACME_STORAGE %>"
+  OnHostRule = <%= env_TRAEFIK_ACME_ONHOSTRULE %>
+  caServer = "<%= env_TRAEFIK_ACME_CASERVER %>"
+  entryPoint = "https"
+  <%- if env_TRAEFIK_ACME_CHALLENGE == "http" -%>
+  # HTTP-01
+  [acme.httpChallenge]
+    entryPoint="http"
+  <%- elsif env_TRAEFIK_ACME_CHALLENGE == "dns" -%>
+  # DNS-01
+  [acme.dnsChallenge]
+    provider = "<%= env_TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER %>"
+    delayBeforeCheck = <%= env_TRAEFIK_ACME_CHALLENGE_DNS_DELAY %>
+  <%- end -%>
+<%- end -%>
+#########################  /acme/ #########################
+#########################  rancher fronend/backend defintions  ##########################
+<%- if env_TRAEFIK_RANCHER_ENABLE == "true" -%>
+[rancher]
+  domain = "<%= env_TRAEFIK_RANCHER_DOMAIN %>"
+  Watch = true
+  RefreshSeconds = <%= env_TRAEFIK_RANCHER_REFRESH %>
+  ExposedByDefault = <%= env_TRAEFIK_RANCHER_EXPOSED %>
+  EnableServiceHealthFilter = <%= env_TRAEFIK_RANCHER_HEALTHCHECK %>
+  <% if env_TRAEFIK_CONSTRAINTS != "" %>
+  constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]
+  <% end -%>
+
+  <%- if env_TRAEFIK_RANCHER_MODE == "api" -%>
+  [rancher.api]
+    Endpoint = "<%= env_TRAEFIK_RANCHER_CATTLE_URL%>"
+    AccessKey = "<%= env_TRAEFIK_RANCHER_CATTLE_ACCESS_KEY%>"
+    SecretKey = "<%= env_TRAEFIK_RANCHER_CATTLE_SECRET_KEY%>"
+  <%- elsif env_TRAEFIK_RANCHER_MODE == "metadata" -%>
+  [rancher.metadata]
+    IntervalPoll = <%= env_TRAEFIK_RANCHER_INTERVALPOLL%>
+    Prefix = "<%= env_TRAEFIK_RANCHER_PREFIX%>"
+  <%- end -%>
+<%- end -%>
+#########################  /rancher fronend/backend defintions / ##########################
+#########################  kubernetes fronend/backend defintions ##########################
+<%- if env_TRAEFIK_K8S_ENABLE == "true" -%>
+[kubernetes]
+  constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]
+<%- end -%>
+#########################  /kubernetes fronend/backend defintions/ ##########################
+#########################  file base fronend/backend defintions ##########################
+<% if env_TRAEFIK_FILE_ENABLE == "true" -%>
+[file]
+  filename = "<%= env_TRAEFIK_FILE_NAME %>"
+  watch = true
+<% end -%>
+#########################  /file base fronend/backend defintions/ ##########################
+#########################  docker based fronend/backend defintions ##########################
+<% if env_TRAEFIK_DOCKER_ENABLE == "true" -%>
+[docker]
+  endpoint = "<%= env_TRAEFIK_DOCKER_ENDPOINT %>"
+  domain = "<%= env_TRAEFIK_DOCKER_DOMAIN %>"
+  exposedByDefault = <%= env_TRAEFIK_DOCKER_EXPOSEDBYDEFAULT %>
+  swarmMode = <%= env_TRAEFIK_DOCKER_SWARMMODE %>
+  constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]
+  <%- if env_TRAEFIK_DOCKER_TLS == "true" -%>
+  [docker.tls]
+    ca = "/mnt/certs/docker.ca.crt"
+    cert = "/mnt/certs/docker.crt"
+    key = "/mnt/certs/docker.key"
+    insecureSkipVerify = "<%= env_TRAEFIK_DOCKER_SKIP_VERIFY %>"
+  <%- end -%>
+<%- end -%>
+#########################  /docker based fronend/backend defintions/ ##########################
+#########################  metrics ##########################
+<% if env_TRAEFIK_METRICS_ENABLE == "true" %>
+[metrics]
+  [metrics.statistics]
+    RecentErrors = <%= env_TRAEFIK_ADMIN_STATISTICS %>
+    <% if env_TRAEFIK_METRICS_EXPORTER == "prometheus" %>
+    # prometheus metrics
+    [metrics.<%= env_TRAEFIK_METRICS_EXPORTER %>]
+      entryPoint = "traefik"
+      buckets=<%= env_TRAEFIK_METRICS_PROMETHEUS_BUCKETS %>
+    <% elsif env_TRAEFIK_METRICS_EXPORTER != "" %>
+    # any other metric server
+    [metrics.<%= env_TRAEFIK_METRICS_EXPORTER %>]å
+      address = "<%= env_TRAEFIK_METRICS_ADDRESS %>"
+      pushInterval = "<%= env_TRAEFIK_METRICS_PUSH %>s"
+    <% end -%>
+<% end -%>
+#########################  /mentrics/ ##########################

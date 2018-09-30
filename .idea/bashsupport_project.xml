@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BashSupportProjectSettings">
+    <option name="globalVariables">
+      <set>
+        <option value="TRAEFIK_ACCESS_FILE" />
+        <option value="TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS" />
+        <option value="TRAEFIK_ADMIN_AUTH_USERS" />
+        <option value="TRAEFIK_LOG_FILE" />
+      </set>
+    </option>
+  </component>
+</project>
