@@ -57,7 +57,6 @@ for more just check the [template]()
 make build
 ```
 
-
 ### Configuration Options ( ENV vars)
 
 Those are the avaiable env vars and their default. This should **not replace** the official [Traefik Documentation](https://docs.traefik.io/).
@@ -146,7 +145,17 @@ For configuring your endpoints with SSL Certificates, ACME is one of the powerfe
 - TRAEFIK_METRICS_ADDRESS=""                            # Metrics exporter address. datadog | statsd | influxdb 
 - TRAEFIK_METRICS_PROMETHEUS_BUCKETS="[0.1,0.3,1.2,5.0]"  # Metrics buckets for prometheus
 
-### Rancher
+## Examples
+
+### Docker
+```bash
+docker-compose -f docker-compose-dockerbackend.yml up
+
+wget http://web1.docker-image-traefik.docker.lan
+wget http://web2.docker-image-traefik.docker.lan
+```
+
+## Rancher
 
 See the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik) to run this in rancher. Fully integrated with rancher metadata
 

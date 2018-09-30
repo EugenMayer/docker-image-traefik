@@ -9,11 +9,15 @@ services:
       TRAEFIK_DOCKER_DOMAIN: 'docker.lan'
       TRAEFIK_ADMIN_ENABLE: 'true'
     ports:
-      - 80:8080
+      - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
       - 443:8443
-      - 8000:8000
+      - 8000:8000 # admin backend unter http://localhost:8000
     volumes:
       # mount our docker socket so our docker container can be discovered
       - /var/run/docker.sock:/var/run/docker.sock
-  whoami:
+  # upstream 1
+  web1:
+    image: containous/whoami
+  # upstream 2
+  web2:
     image: containous/whoami

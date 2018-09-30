@@ -31,5 +31,4 @@ ln -sf /proc/1/fd/1 ${TRAEFIK_ACCESS_FILE}
 
 log "[ Starting Traefik... ]"
 # forwarding to the base entrypoint
-cat /etc/traefik/traefik.toml
 exec ./entrypoint.sh "$@"
