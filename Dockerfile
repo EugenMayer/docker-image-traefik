@@ -1,5 +1,4 @@
-#FROM traefik:1.7-alpine
-FROM traefik:1.6-alpine
+FROM traefik:1.7-alpine
 MAINTAINER Eugen Mayer <eugen.mayer@kontextwork.de>
 
 ADD bin/ /usr/local/bin/

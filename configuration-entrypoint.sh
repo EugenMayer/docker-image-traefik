@@ -39,6 +39,4 @@ fi
 log "[ Starting Traefik... ]"
 
 # forwarding to the base entrypoint
-# exec ./entrypoint.sh "$@"
-env
-traefik
+exec ./entrypoint.sh "$@"
