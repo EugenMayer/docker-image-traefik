@@ -6,9 +6,11 @@ ADD configuration-entrypoint.sh /configuration-entrypoint.sh
 RUN mkdir -p /etc/traefik /mnt/acme /mnt/filestorage /mnt/certs /usr/local/bin /etc/tiller \
  && apk --update add bash ruby openssl \
  && chmod +x /usr/local/bin/*.sh /configuration-entrypoint.sh \
+ # we use tiller for generating our configuration
  # we use json_pure so we do not need compile tools for the native C extension
  && gem install tiller json_pure --no-ri
 
+# tiller templates
 ADD tiller/ /etc/tiller/
 
 # volume to put your own certificates on and also our generated one (/mnt/certs/ssl.key | /mnt/certs/ssl.crt)
