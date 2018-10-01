@@ -5,20 +5,20 @@ services:
   traefik:
     image: eugenmayer/traefik
     environment:
-      #TRAEFIK_DEBUG: "true"
-      #TRAEFIK_LOG_LEVEL: "debug"
-      TRAEFIK_HTTPS_ENABLE: 'only'
+      ####  those are the mandatory ACME variables
       TRAEFIK_ACME_ENABLE: 'true'
-      TRAEFIK_ACME_LOGGIN: 'true'
       TRAEFIK_ACME_CHALLENGE: 'dns'
-      # use the staging server
-      TRAEFIK_ACME_CASERVER: "https://acme-staging-v02.api.letsencrypt.org/directory"
-      # TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER and TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS and TRAEFIK_DOCKER_DOMAIN should be defined in .env here
-      # see https://docs.traefik.io/configuration/acme/#provider
+      # see README.md
       TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER: "${TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER}"
       TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: "${TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS}"
-      # your domain
+
+      ###  below are test server adjustments
+      # use the ACME staging server
+      TRAEFIK_ACME_CASERVER: "https://acme-staging-v02.api.letsencrypt.org/directory"
       TRAEFIK_DOCKER_DOMAIN: "${YOUR_DOMAIN}"
+
+      ### basic provider setup
+      TRAEFIK_HTTPS_ENABLE: 'only'
       TRAEFIK_ADMIN_ENABLE: 'true'
       TRAEFIK_DOCKER_ENABLE: 'true'
     ports:
