@@ -159,12 +159,22 @@ wget http://web2.docker-image-traefik.docker.lan
 ### ACME DNS-01
 Please set your `TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER` and `TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS` in `.env` and then run
 
+You `.env` file should like like this, for other provider see the [documentation](https://docs.traefik.io/configuration/acme/#provider)
+
+```dotenv
+YOUR_DOMAIN=company.com
+TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER=cloudflare
+TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS=CLOUDFLARE_EMAIL=aasdas@gmx.de;CLOUDFLARE_API_KEY=adqweq121
+```
+
+Then start the stack and wait for about 3 minutes for all certificates to get installed
 ```
 docker-compose -f docker-compose-acmedns.yml up
 
 
-wget http://web1.docker-image-traefik.docker.lan
-wget http://web2.docker-image-traefik.docker.lan
+wget https://web1.docker-image-traefik.company.com
+wget https://web2.docker-image-traefik.company.com
+wget https://foo.company.com
 ``` 
 
 ## Rancher

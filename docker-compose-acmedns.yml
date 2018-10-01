@@ -14,7 +14,7 @@ services:
       TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER: "${TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER}"
       TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: "${TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS}"
       # your domain
-      TRAEFIK_DOCKER_DOMAIN: ${YOUR_DOMAIN}
+      TRAEFIK_DOCKER_DOMAIN: "${YOUR_DOMAIN}"
       TRAEFIK_ADMIN_ENABLE: 'true'
     ports:
       - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
