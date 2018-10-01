@@ -32,5 +32,7 @@ ln -sf /proc/1/fd/1 ${TRAEFIK_LOG_FILE}
 ln -sf /proc/1/fd/1 ${TRAEFIK_ACCESS_FILE}
 
 log "[ Starting Traefik... ]"
+echo ${CLOUDFLARE_EMAIL}
+echo ${CLOUDFLARE_API_KEY}
 # forwarding to the base entrypoint
 exec ./entrypoint.sh "$@"
