@@ -8,11 +8,15 @@ It bases on top of the official stable release of [Traefik](https://hub.docker.c
 The image is published under [eugenmayer/traefik](https://hub.docker.com/r/eugenmayer/traefik)
 If you happen to use rancher, you find the corresponding catalog in see the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik)
 
+
 ## WAT its not
 
 Even though this image will make it a lot easier bootstrapping and running your traefik server in production with various providers, this is not a beginners-boilerplate.
 That said, all your traefik questions go the Forum/Slack and before that, read the [Traefik Documentation](https://docs.traefik.io/). I will not answer "how to do this in Traefik" questions in the issue queue.
 Thanks!
+
+**kubernetes**
+If you are using k8s you might rather consider using a [configMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) like [this](https://gist.github.com/joejulian/607f0090230d9aa8701155590c22c3e2) to stick with the canonical way.
 
 ## Configuration
 
