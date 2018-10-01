@@ -17,7 +17,7 @@ defaultEntryPoints = <%= default_entrypoints %>
 sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
 
 [traefikLog]
-  filePath = "<%= env_TRAEFIK_LOG_FILE %> "
+  filePath = "<%= env_TRAEFIK_LOG_FILE %>"
 
 [accessLog]
   filePath = "<%= env_TRAEFIK_ACCESS_FILE %>"
@@ -100,6 +100,7 @@ sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
   OnHostRule = <%= env_TRAEFIK_ACME_ONHOSTRULE %>
   caServer = "<%= env_TRAEFIK_ACME_CASERVER %>"
   entryPoint = "https"
+  acmeLogging = <%= env_TRAEFIK_ACME_LOGGIN %>
   <%- if env_TRAEFIK_ACME_CHALLENGE == "http" -%>
   # HTTP-01
   [acme.httpChallenge]
