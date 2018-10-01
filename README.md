@@ -96,7 +96,7 @@ Use this as a starting point / what you can do with this configuration, read the
 - TRAEFIK_ADMIN_AUTH_USERS=""                           # Basic or digest users created with htpasswd or htdigest. 
 
 #### ACME
-For configuring your endpoints with SSL Certificates, ACME is one of the powerfeatures of [Traefik](https://traefik.io)
+For configuring your endpoints with SSL Certificates, ACME is one of the power features of [Traefik](https://traefik.io)
 
 - TRAEFIK_ACME_ENABLE="false"							# Enable/disable traefik ACME feature. [acme](https://docs.traefik.io/configuration/acme/)
 - TRAEFIK_ACME_CHALLENGE="http"                         # Set http | dns to activate traefik acme challenge mode. 
@@ -107,6 +107,7 @@ For configuring your endpoints with SSL Certificates, ACME is one of the powerfe
 - TRAEFIK_ACME_EMAIL="test@traefik.io"					# Default email
 - TRAEFIK_ACME_ONHOSTRULE="true"						# ACME OnHostRule parameter
 - TRAEFIK_ACME_CASERVER="https://acme-v02.api.letsencrypt.org/directory"						# ACME caServer parameter
+- TRAEFIK_ACME_LOGGING="false"                          # enable debug logging for ACME operations. Useful if you look for ACME issues
 
 #### Provider: File backend
 - TRAEFIK_FILE_ENABLE="false"							# Enable/disable file backend
