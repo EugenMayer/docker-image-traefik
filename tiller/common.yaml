@@ -7,6 +7,10 @@ environment:
 template_sources: [ "file" ]
 
 defaults:
+  acme-credentials.erb:
+    target: /etc/traefik/acme_credentials
+    config:
+      env_TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: ""
   traefik.toml.erb:
     target: /etc/traefik/traefik.toml
     config:
