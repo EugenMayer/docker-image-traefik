@@ -6,6 +6,7 @@ Implements a ENV-Var based configuratoin for your Traefik server running as a do
 It bases on top of the official stable release of [Traefik](https://hub.docker.com/_/traefik/) and just adds a bootstrap to generate the `traefik.toml` file from your ENV variables you pass to the container.
 
 The image is published under [eugenmayer/traefik](https://hub.docker.com/r/eugenmayer/traefik)
+If you happen to use rancher, you find the corresponding catalog in see the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik)
 
 ## WAT its not
 
