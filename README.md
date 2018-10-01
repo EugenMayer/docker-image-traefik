@@ -16,7 +16,8 @@ That said, all your traefik questions go the Forum/Slack and before that, read t
 Thanks!
 
 **kubernetes**
-If you are using k8s you might rather consider using a [configMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) like [this](https://gist.github.com/joejulian/607f0090230d9aa8701155590c22c3e2) to stick with the canonical way.
+
+If you are using k8s you might rather consider using a [configMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) like [this](https://gist.github.com/joejulian/607f0090230d9aa8701155590c22c3e2) to stick with the canonical way and not using this image
 
 ## Configuration
 
