@@ -11,12 +11,12 @@ function log {
         echo `date` $ME - $@
 }
 
-if [ ! -f /mnt/certs/ssl.key ];  then
+if [ ! -f /mnt/certs/ssl.key ]; then
     log "[ Generating certificates ]"
     generate-ssl-certificate.sh 127.0.0.1 /mnt/certs
 fi
 
-if [ -n "{TRAEFIK_ADMIN_AUTH_USERS}" ];  then
+if [ -n "${TRAEFIK_ADMIN_AUTH_USERS}" ]; then
     log "[ Popuplating basic auth users ]"
     echo ${TRAEFIK_ADMIN_AUTH_USERS} > "/etc/traefik/.htpasswd"
 fi
