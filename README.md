@@ -155,15 +155,16 @@ For configuring your endpoints with SSL Certificates, ACME is one of the power f
 
 ## Examples
 
-### Docker
+### Docker Provider
 ```bash
-docker-compose -f docker-compose-dockerbackend.yml up
+docker-compose -f docker-compose.yml up
 
 wget http://web1.docker-image-traefik.docker.lan
 wget http://web2.docker-image-traefik.docker.lan
 ```
 
-### ACME DNS-01
+### ACME DNS-01 for SSL with Lets Encrypt
+
 Please set your `TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER` and `TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS` in `.env` and then run
 
 You `.env` file should like like this, for other provider see the [documentation](https://docs.traefik.io/configuration/acme/#provider)
@@ -176,7 +177,7 @@ TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS=CLOUDFLARE_EMAIL=aasdas@gmx.de;CLOUDFLARE
 
 Then start the stack and wait for about 3 minutes for all certificates to get installed
 ```
-docker-compose -f docker-compose-acmedns.yml up
+docker-compose -f docker-compose-acme-dns.yml up
 
 
 wget https://web1.docker-image-traefik.company.com

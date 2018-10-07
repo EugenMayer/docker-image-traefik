@@ -4,22 +4,33 @@ version: "2"
 services:
   traefik:
     image: eugenmayer/traefik
-    container_name: traefik
-    volumes:
-      - ./tiller:/etc/tiller
+    entrypoint: sleep 50000
     environment:
+      TRAEFIK_DOCKER_ENABLE: 'true'
+      TRAEFIK_DOCKER_DOMAIN: 'docker.lan'
       TRAEFIK_ADMIN_ENABLE: 'true'
-      TRAEFIK_HTTPS_ENABLE: 'true'
-      TRAEFIK_HTTPS_ENABLE: 'true'
-      TRAEFIK_ACME_ENABLE: 'true'
-      TRAEFIK_ACME_CHALLENGE: 'dns'
-      TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER: "cloudflare"
-      TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: 'CLOUDFLARE_EMAIL=aasdas@gmx.de;,CLOUDFLARE_API_KEY=adqweq121'
-      TRAEFIK_RANCHER_ENABLE: 'true'
+      TRAEFIK_ADMIN_ENABLE: 'true'
     ports:
-      - 80:8080
+      - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
       - 443:8443
-      - 8000:8000
+      - 8000:8000 # admin backend unter http://localhost:8000
+    volumes:
+      - certs:/mnt/certs
+      - filestorage:/mnt/filestorage
+      - acme:/mnt/acme
+      # mount our docker socket so our docker container can be discovered
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  web1: # upstream/frontend 1: http://web1.docker-image-traefik.docker.lan
+    image: containous/whoami
+
+  web2: # upstream/frontend 2: http://web2.docker-image-traefik.docker.lan
+    image: containous/whoami
+
+  web3: # upstream/frontend 3: http://foo.bar.lan
+    image: containous/whoami
+    labels:
+      traefik.frontend.rule: "Host: foo.bar.lan"
 
 volumes:
   acme:

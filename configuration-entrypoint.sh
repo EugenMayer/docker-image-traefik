@@ -16,12 +16,6 @@ if [ ! -f /mnt/certs/ssl.key ]; then
     generate-ssl-certificate.sh 127.0.0.1 /mnt/certs
 fi
 
-if [ -n "${TRAEFIK_ADMIN_AUTH_USERS}" ]; then
-    log "[ Popuplating basic auth users ]"
-    echo ${TRAEFIK_ADMIN_AUTH_USERS} > "/etc/traefik/.htpasswd"
-fi
-
-
 log "[ Generating Traefik configuration to /etc/traefik/traefik.toml ... ]"
 # this also generated /etc/traefik/acme_credentials if credentials are set
 tiller -e production

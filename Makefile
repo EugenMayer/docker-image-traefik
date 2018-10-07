@@ -4,4 +4,5 @@ build:
 
 push:
 	source version && docker tag eugenmayer/traefik eugenmayer/traefik:"$${VERSION}"
-	docker push eugenmayer/traefik
+	docker push eugenmayer/traefik:latest
+	source version && docker push eugenmayer/traefik:$${VERSION}

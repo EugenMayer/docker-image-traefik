@@ -8,6 +8,12 @@ default_entrypoints=["http"].to_s
 if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE)
   default_entrypoints=%w(http https).to_s
 end
+
+
+adminUsers=[]
+if env_TRAEFIK_ADMIN_AUTH_USERS != ""
+  adminUsers=env_TRAEFIK_ADMIN_AUTH_USERS.split('\n').to_s
+end
 %>
 
 debug = <%= env_TRAEFIK_DEBUG %>
@@ -66,9 +72,9 @@ sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
   [entryPoints.traefik]
     address = ":<%= env_TRAEFIK_ADMIN_PORT %>"
     compress = <%= env_TRAEFIK_HTTP_COMPRESSION %>
-   <%- if env_TRAEFIK_ADMIN_AUTH_USERS != "" -%>
-    [entryPoints.traefik.auth.<%= env_TRAEFIK_ADMIN_AUTH_METHOD %>
-      usersFile = "/etc/traefik/.htpasswd"
+   <%- if adminUsers.length > 0 -%>
+    [entryPoints.traefik.auth.<%= env_TRAEFIK_ADMIN_AUTH_METHOD %>]
+    users = <%= adminUsers %>
    <%- end -%>
    <%- if env_TRAEFIK_ADMIN_SSL == "true" -%>
     [entryPoints.traefik.tls]
