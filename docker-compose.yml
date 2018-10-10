@@ -4,11 +4,9 @@ version: "2"
 services:
   traefik:
     image: eugenmayer/traefik
-    entrypoint: sleep 50000
     environment:
       TRAEFIK_DOCKER_ENABLE: 'true'
       TRAEFIK_DOCKER_DOMAIN: 'docker.lan'
-      TRAEFIK_ADMIN_ENABLE: 'true'
       TRAEFIK_ADMIN_ENABLE: 'true'
     ports:
       - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
@@ -22,13 +20,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   web1: # upstream/frontend 1: http://web1.docker-image-traefik.docker.lan
-    image: containous/whoami
+    image: eugenmayer/whoami:single
 
   web2: # upstream/frontend 2: http://web2.docker-image-traefik.docker.lan
-    image: containous/whoami
+    image: eugenmayer/whoami:single
 
   web3: # upstream/frontend 3: http://foo.bar.lan
-    image: containous/whoami
+    image: eugenmayer/whoami:single
     labels:
       traefik.frontend.rule: "Host: foo.bar.lan"
 
