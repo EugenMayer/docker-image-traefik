@@ -8,6 +8,11 @@ It bases on top of the official stable release of [Traefik](https://hub.docker.c
 The image is published under [eugenmayer/traefik](https://hub.docker.com/r/eugenmayer/traefik)
 If you happen to use rancher, you find the corresponding catalog in see the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik)
 
+There are builds for:
+
+ - amd64
+ - arm64v8 (rpi 3) 
+
 
 ## WAT its not
 
