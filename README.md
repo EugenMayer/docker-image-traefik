@@ -11,7 +11,9 @@ If you happen to use rancher, you find the corresponding catalog in see the cata
 There are builds for:
 
  - amd64
- - arm64v8 (rpi 3) 
+ - arm64v8 (rpi 3)
+ - arm32v7 (rpi 2) (the same build as v7 [see this](https://github.com/gliderlabs/docker-alpine/issues/298) )  
+ - arm32v6 (rpi 1)
 
 
 ## WAT its not
