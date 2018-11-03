@@ -61,9 +61,8 @@ I guess you get the idea.
 - Basic auth
 - Trusted IPs
 - Admin Backend / TLS
+- Combine several backends, e.g. Docker and File (the latter for your custom stuff / off docker things )
 
-for more just check the [template]()
- 
 ## Build
 
 ```
