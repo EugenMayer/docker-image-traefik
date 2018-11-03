@@ -124,7 +124,7 @@ For configuring your endpoints with SSL Certificates, ACME is one of the power f
 
 #### Provider: File backend
 - TRAEFIK_FILE_ENABLE="false"							# Enable/disable file backend
-- TRAEFIK_FILE_NAME="/mnt/filestorage/rules.toml"       # where your custom rules will be located. keep that path, its a volume
+- TRAEFIK_FILE_FOLDER="/mnt/filestorage"                # where your custom rules will be located. Keep that path its a volume, create `frontend1.yml` .. `frontend2.yml` inside that folder. Its watched automatically
 
 #### Provider: Kubernetes
 - TRAEFIK_K8S_ENABLE="false"							# Enable/disable traefik K8S integration

@@ -71,7 +71,7 @@ defaults:
       env_TRAEFIK_RANCHER_CATTLE_SECRET_KEY: ""
       env_TRAEFIK_K8S_ENABLE: "false"
       env_TRAEFIK_K8S_OPTS: ""
-      env_TRAEFIK_FILE_NAME: "/mnt/filestorage/rules.toml"
+      env_TRAEFIK_FILE_FOLDER: "/mnt/filestorage"
       env_TRAEFIK_FILE_ENABLE: "false"
       env_TRAEFIK_FILE_OPTS: ""
       env_TRAEFIK_DOCKER_ENABLE: "false"
