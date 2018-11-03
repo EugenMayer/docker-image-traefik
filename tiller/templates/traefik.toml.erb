@@ -150,7 +150,7 @@ sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
 <%- end -%>
 #########################  /kubernetes fronend/backend defintions/ ##########################
 #########################  file base fronend/backend defintions ##########################
-<% if env_TRAEFIK_FILE_FOLDER == "true" -%>
+<% if env_TRAEFIK_FILE_ENABLE == "true" -%>
 [file]
   directory = "<%= env_TRAEFIK_FILE_FOLDER %>"
   watch = true
