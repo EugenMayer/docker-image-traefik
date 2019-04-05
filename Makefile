@@ -1,3 +1,5 @@
+release: build push
+
 build:
 	docker pull traefik:1.7-alpine
 	docker pull arm64v8/traefik:1.7-alpine
