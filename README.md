@@ -1,6 +1,6 @@
 [![](https://images.microbadger.com/badges/image/eugenmayer/traefik.svg)](https://microbadger.com/images/eugenmayer/traefik)
 
-**HINT: This branch support Traefik 2.x**
+**HINT: This branch supports Traefik 2.x**
 
 ## Migration to 2.0
 
@@ -139,15 +139,11 @@ For configuring your endpoints with SSL Certificates, ACME is one of the power f
 #### Provider: Rancher
 - TRAEFIK_RANCHER_ENABLE="false"						# Enable/disable traefik RANCHER integration
 - TRAEFIK_RANCHER_REFRESH=15                            # Rancher poll refresh seconds
-- TRAEFIK_RANCHER_MODE="api"                            # Rancher integration mode. api | metadata
-- TRAEFIK_RANCHER_DOMAIN="rancher.internal"				# Rancher domain
+- TRAEFIK_RANCHER_DEFAUL_RULE="Host(`{{ normalize .Name }}`)"  # Rancher domain
 - TRAEFIK_RANCHER_EXPOSED="false"						# Rancher ExposedByDefault
 - TRAEFIK_RANCHER_HEALTHCHECK="false"					# Rancher EnableServiceHealthFilter
 - TRAEFIK_RANCHER_INTERVALPOLL="false"                  # Rancher enable/disable intervalpoll
-- TRAEFIK_RANCHER_PREFIX="/2016-07-29"                  # Rancher metadata prefix
-- TRAEFIK_RANCHER_CATTLE_URL=""							# Rancher API url
-- TRAEFIK_RANCHER_CATTLE_ACCESS_KEY=""					# Rancher access key
-- TRAEFIK_RANCHER_CATTLE_SECRET_KEY=""					# Rancher secret key
+- TRAEFIK_RANCHER_PREFIX="/latest"                      # Rancher metadata prefix
 - TRAEFIK_CONSTRAINTS=""                                # Traefik constraint param. EG: \\"tag==api\\" - see https://docs.traefik.io/configuration/commons/#constraints
 
 #### Provider: Docker
