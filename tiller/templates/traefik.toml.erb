@@ -1,14 +1,9 @@
+## see https://docs.traefik.io/reference/static-configuration/file/
 <%
 trusted_ips=[]
 if env_TRAEFIK_TRUSTEDIPS != ""
   trusted_ips= env_TRAEFIK_TRUSTEDIPS.split(',').to_s
 end
-
-default_entrypoints=["http"].to_s
-if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE)
-  default_entrypoints=%w(http https).to_s
-end
-
 
 adminUsers=[]
 if env_TRAEFIK_ADMIN_AUTH_USERS != ""
@@ -16,31 +11,58 @@ if env_TRAEFIK_ADMIN_AUTH_USERS != ""
 end
 %>
 
-debug = <%= env_TRAEFIK_DEBUG %>
-logLevel = "<%= env_TRAEFIK_LOG_LEVEL %>"
-insecureSkipVerify = <%= env_TRAEFIK_INSECURE_SKIP %>
-defaultEntryPoints = <%= default_entrypoints %>
-sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
+[global]
+  sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
+  checkNewVersion = false
 
-[traefikLog]
+[log]
+  level = "<%= env_TRAEFIK_LOG_LEVEL %>"
   filePath = "<%= env_TRAEFIK_LOG_FILE %>"
 
 [accessLog]
   filePath = "<%= env_TRAEFIK_ACCESS_FILE %>"
 
-[respondingTimeouts]
-  readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
-  writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
-  idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
+[serversTransport]
+  insecureSkipVerify = <%= env_TRAEFIK_INSECURE_SKIP %>
+  [serversTransport.forwardingTimeouts]
+    dialTimeout = "<%= env_TRAEFIK_TIMEOUT_DIAL %>s"
+    responseHeaderTimeout = "<%= env_TRAEFIK_TIMEOUT_HEADER %>s"
 
-[forwardingTimeouts]
-  dialTimeout = "<%= env_TRAEFIK_TIMEOUT_DIAL %>s"
-  responseHeaderTimeout = "<%= env_TRAEFIK_TIMEOUT_HEADER %>s"
+#########################  middlewares ##########################
+
+<% if %w(true only).include?(env_TRAEFIK_HTTP_COMPRESSION) -%>
+[http.middlewares]
+  [http.middlewares.compress.compress]
+<%- end -%>
+<%- if adminUsers.length > 0 -%>
+[http.middlewares.auth.basicAuth]
+    users = <%= adminUsers %>
+<%- end -%>
+#########################  /middlewares/ ##########################
+
+#########################  tls options ##########################
+
+<%- if env_TRAEFIK_ADMIN_ENABLE == "true" || %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) -%>
+<%- if env_TRAEFIK_ADMIN_SSL_CERT_FILE != "" -%>
+[[tls.certificates]]
+  certFile = "<%= env_TRAEFIK_ADMIN_SSL_CERT_FILE %>"
+  keyFile = "<%= env_TRAEFIK_ADMIN_SSL_KEY_FILE %>"
+<%- end -%>
+
+[tls.options]
+  [tls.options.defaultTlsOptions]
+    minVersion = "<%= env_TRAEFIK_HTTPS_MIN_TLS %>"
+<%- end -%>
+#########################  /tls options/ ##########################
 
 [entryPoints]
   [entryPoints.http]
     address = ":<%= env_TRAEFIK_HTTP_PORT %>"
-    compress = <%= env_TRAEFIK_HTTP_COMPRESSION %>
+    [entryPoints.http.transport]
+    [entryPoints.http.transport.respondingTimeouts]
+      readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
+      writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
+      idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
   <%- if env_TRAEFIK_HTTPS_ENABLE == "only" -%>
     [entryPoints.http.redirect]
       entryPoint = "https"
@@ -51,14 +73,18 @@ sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
     [entryPoints.http.forwardedHeaders]
       trustedIPs: <%= trusted_ips %>
   <%- end -%>
+
 #########################  tls endpoint configuration ##########################
 <% if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) -%>
   # TLS endpoint
   [entryPoints.https]
     address = ":<%= env_TRAEFIK_HTTPS_PORT %>"
     compress = <%= env_TRAEFIK_HTTPS_COMPRESSION %>
-    [entryPoints.https.tls]
-      MinVersion = "<%= env_TRAEFIK_HTTPS_MIN_TLS %>"
+    [entryPoints.https.transport]
+    [entryPoints.https.transport.respondingTimeouts]
+      readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
+      writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
+      idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
   <%- if trusted_ips.length > 0 -%>
     [entryPoints.https.proxyProtocol]
       trustedIPs: <%= trusted_ips %>
@@ -67,30 +93,25 @@ sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
   <%- end -%>
 <%-end -%>
 #########################  /tls endpoint configuration/ ##########################
+
 #########################  admin backend configuration ##########################
 <%- if env_TRAEFIK_ADMIN_ENABLE == "true" -%>
   [entryPoints.traefik]
     address = ":<%= env_TRAEFIK_ADMIN_PORT %>"
-    compress = <%= env_TRAEFIK_HTTP_COMPRESSION %>
-   <%- if adminUsers.length > 0 -%>
-    [entryPoints.traefik.auth.<%= env_TRAEFIK_ADMIN_AUTH_METHOD %>]
-    users = <%= adminUsers %>
-   <%- end -%>
-   <%- if env_TRAEFIK_ADMIN_SSL == "true" -%>
-    [entryPoints.traefik.tls]
-      MinVersion = "<%= env_TRAEFIK_HTTPS_MIN_TLS %>"
-      [[entryPoints.traefik.tls.certificates]]
-      certFile = "<%= env_TRAEFIK_ADMIN_SSL_CERT_FILE %>"
-      keyFile = "<%= env_TRAEFIK_ADMIN_SSL_KEY_FILE %>"
-   <%- end -%>
+
+[http.routers.my-api]
+  rule="PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+  service="api@internal"
+  <%- if adminUsers.length > 0 -%>
+  middlewares=["auth"]
+  <% end -%>
+  [http.routers.my-api.tls]
+    options = "defaultTlsOptions"
 
 [api]
-  entryPoint = "traefik"
-  dashboard = true
   insecure = true
+  dashboard = true
   debug = <%= env_TRAEFIK_DEBUG %>
-  [api.statistics]
-    recentErrors = <%= env_TRAEFIK_ADMIN_STATISTICS %>
 
 [ping]
   entryPoint = "traefik"
@@ -160,7 +181,7 @@ sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
 <% if env_TRAEFIK_DOCKER_ENABLE == "true" -%>
   [providers.docker]
     endpoint = "<%= env_TRAEFIK_DOCKER_ENDPOINT %>"
-    domain = "<%= env_TRAEFIK_DOCKER_DOMAIN %>"
+    defaultRule = "<%= env_TRAEFIK_DOCKER_DOMAIN || env_TRAEFIK_DOCKER_DEFAULT_RULE %>"
     exposedByDefault = <%= env_TRAEFIK_DOCKER_EXPOSEDBYDEFAULT %>
     swarmMode = <%= env_TRAEFIK_DOCKER_SWARMMODE %>
     constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]

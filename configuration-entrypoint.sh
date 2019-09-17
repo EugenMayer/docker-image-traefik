@@ -33,4 +33,4 @@ fi
 log "[ Starting Traefik... ]"
 
 # forwarding to the base entrypoint
-exec ./entrypoint.sh "$@"
+exec /entrypoint.sh "$@"

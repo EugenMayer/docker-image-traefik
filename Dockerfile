@@ -1,4 +1,4 @@
-FROM traefik:1.7-alpine
+FROM traefik:2.0-alpine
 MAINTAINER Eugen Mayer <eugen.mayer@kontextwork.de>
 
 ADD bin/ /usr/local/bin/
@@ -21,7 +21,7 @@ VOLUME /mnt/filestorage
 # will hold /mnt/acme/acme.json which are all your certificates you gathered using ACME
 VOLUME /mnt/acme
 
-# we are chaning the default entrypoint to proxy our conifuration before we start traefik using the official
+# we are chaning the default entrypoint to proxy our configuration before we start traefik using the official
 # /entrypoint.sh right at the end.
 ENTRYPOINT ["/configuration-entrypoint.sh"]
-
+CMD ["traefik"]

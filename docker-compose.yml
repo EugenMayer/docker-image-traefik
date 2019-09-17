@@ -3,10 +3,9 @@ version: "2"
 
 services:
   traefik:
-    image: eugenmayer/traefik
+    image: eugenmayer/traefik:2.x
     environment:
       TRAEFIK_DOCKER_ENABLE: 'true'
-      TRAEFIK_DOCKER_DOMAIN: 'docker.lan'
       TRAEFIK_ADMIN_ENABLE: 'true'
     ports:
       - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
@@ -28,7 +27,7 @@ services:
   web3: # upstream/frontend 3: http://foo.bar.lan
     image: eugenmayer/whoami:single
     labels:
-      traefik.frontend.rule: "Host: foo.bar.lan"
+      traefik.http.routers.router0.rule: "Host(`foo.bar.lan`)"
 
 volumes:
   acme:

@@ -1,5 +1,11 @@
 [![](https://images.microbadger.com/badges/image/eugenmayer/traefik.svg)](https://microbadger.com/images/eugenmayer/traefik)
 
+**HINT: This branch support Traefik 2.x**
+
+## Migration to 2.0
+
+1. rename `TRAEFIK_DOCKER_DOMAIN` to `TRAEFIK_DOCKER_DEFAULT_RULE` and use the new syntax https://docs.traefik.io/providers/docker/#defaultrule 
+
 ## WAT
 
 Implements a ENV-Var based configuratoin for your Traefik server running as a docker-image.
@@ -10,10 +16,10 @@ If you happen to use rancher, you find the corresponding catalog in see the cata
 
 There are builds for:
 
- - amd64
- - arm64v8 (rpi 3)
- - arm32v7 (rpi 2) (the same build as v7 [see this](https://github.com/gliderlabs/docker-alpine/issues/298) )  
- - arm32v6 (rpi 1)
+ - amd64-2.x
+ - arm64v8-2.x (rpi 3)
+ - arm32v7-2.x (rpi 2) (the same build as v7 [see this](https://github.com/gliderlabs/docker-alpine/issues/298) )  
+ - arm32v6-2.x (rpi 1)
 
 
 ## WAT its not
@@ -146,7 +152,7 @@ For configuring your endpoints with SSL Certificates, ACME is one of the power f
 #### Provider: Docker
 - TRAEFIK_DOCKER_ENABLE="false"                         # use true to enable the [docker provder](https://docs.traefik.io/configuration/backends/docker/)
 - TRAEFIK_DOCKER_ENDPOINT="unix:///var/run/docker.sock" # how to access your docker engine - mount this socket or define a `tcp://` based connection
-- TRAEFIK_DOCKER_DOMAIN="docker.localhost"              # the default domain to generate frontends for
+- TRAEFIK_DOCKER_DEFAULT_RULE="Host(`{{ normalize .Name }}`)"              # the default domain to generate frontends for
 - TRAEFIK_DOCKER_EXPOSEDBYDEFAULT="true"                # should all docker-containers in the engine be parsed by their exposed ports
 - TRAEFIK_DOCKER_SWARMMODE="false"                      # use `tcp://` for accessing a swarm cluster. If you set this, put your TLS creds under `/mnt/certs/docker.ca.crt, /mnt/certs/docker.crt, /mnt/certs/docker.ca.key`
 - TRAEFIK_DOCKER_SKIP_VERIFY="false"                    # when set, the connection to the upstream swarm cluster is not verified ( TLS )

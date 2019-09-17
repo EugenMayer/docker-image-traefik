@@ -3,7 +3,7 @@ version: "2"
 
 services:
   traefik:
-    image: eugenmayer/traefik
+    image: eugenmayer/traefik:2.x
     environment:
       ####  those are the mandatory ACME variables
       TRAEFIK_ACME_ENABLE: 'true'
@@ -41,7 +41,7 @@ services:
   web3: # upstream/frontend 3: http://foo.bar.lan
     image: containous/whoami
     labels:
-      traefik.frontend.rule: "Host: foo.${YOUR_DOMAIN}"
+      traefik.http.routers.router0.rule: "Host(`foo.${YOUR_DOMAIN}`)"
 
 volumes:
   acme:
