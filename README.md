@@ -1,5 +1,7 @@
 [![](https://images.microbadger.com/badges/image/eugenmayer/traefik.svg)](https://microbadger.com/images/eugenmayer/traefik)
 
+**Hint**: For traefik 2.0 see the feature/2.0 branch and the :2.0 tag
+
 ## WAT
 
 Implements a ENV-Var based configuratoin for your Traefik server running as a docker-image.
