@@ -18,7 +18,7 @@ end
 
 debug = <%= env_TRAEFIK_DEBUG %>
 logLevel = "<%= env_TRAEFIK_LOG_LEVEL %>"
-InsecureSkipVerify = <%= env_TRAEFIK_INSECURE_SKIP %>
+insecureSkipVerify = <%= env_TRAEFIK_INSECURE_SKIP %>
 defaultEntryPoints = <%= default_entrypoints %>
 sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
 
@@ -87,12 +87,10 @@ sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
 [api]
   entryPoint = "traefik"
   dashboard = true
+  insecure = true
   debug = <%= env_TRAEFIK_DEBUG %>
   [api.statistics]
-    RecentErrors = <%= env_TRAEFIK_ADMIN_STATISTICS %>
-
-[rest]
-  entryPoint = "traefik"
+    recentErrors = <%= env_TRAEFIK_ADMIN_STATISTICS %>
 
 [ping]
   entryPoint = "traefik"
@@ -100,7 +98,7 @@ sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
 #########################  /admin backend configuration/ ##########################
 #########################  acme ###########################
 <%- if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) && env_TRAEFIK_ACME_ENABLE == "true" -%>
-[acme]
+[certificatesResolvers.default.acme]
   email = "<%= env_TRAEFIK_ACME_EMAIL %>"
   storage =  "<%= env_TRAEFIK_ACME_STORAGE %>"
   OnHostRule = <%= env_TRAEFIK_ACME_ONHOSTRULE %>
@@ -109,68 +107,70 @@ sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
   acmeLogging = <%= env_TRAEFIK_ACME_LOGGIN %>
   <%- if env_TRAEFIK_ACME_CHALLENGE == "http" -%>
   # HTTP-01
-  [acme.httpChallenge]
+  [certificatesResolvers.default.acme.httpChallenge]
     entryPoint="http"
   <%- elsif env_TRAEFIK_ACME_CHALLENGE == "dns" -%>
   # DNS-01
-  [acme.dnsChallenge]
+  [certificatesResolvers.default.acme.dnsChallenge]
     provider = "<%= env_TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER %>"
     delayBeforeCheck = <%= env_TRAEFIK_ACME_CHALLENGE_DNS_DELAY %>
   <%- end -%>
 <%- end -%>
 #########################  /acme/ #########################
 #########################  rancher fronend/backend defintions  ##########################
+[providers]
 <%- if env_TRAEFIK_RANCHER_ENABLE == "true" -%>
-[rancher]
-  domain = "<%= env_TRAEFIK_RANCHER_DOMAIN %>"
-  Watch = true
-  RefreshSeconds = <%= env_TRAEFIK_RANCHER_REFRESH %>
-  ExposedByDefault = <%= env_TRAEFIK_RANCHER_EXPOSED %>
-  EnableServiceHealthFilter = <%= env_TRAEFIK_RANCHER_HEALTHCHECK %>
-  <% if env_TRAEFIK_CONSTRAINTS != "" %>
-  constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]
-  <% end -%>
+  [providers.rancher]
+    domain = "<%= env_TRAEFIK_RANCHER_DOMAIN %>"
+    watch = true
+    refreshSeconds = <%= env_TRAEFIK_RANCHER_REFRESH %>
+    exposedByDefault = <%= env_TRAEFIK_RANCHER_EXPOSED %>
+    enableServiceHealthFilter = <%= env_TRAEFIK_RANCHER_HEALTHCHECK %>
+    intervalPoll = <%= env_TRAEFIK_RANCHER_INTERVALPOLL%>
 
-  <%- if env_TRAEFIK_RANCHER_MODE == "api" -%>
-  [rancher.api]
-    Endpoint = "<%= env_TRAEFIK_RANCHER_CATTLE_URL%>"
-    AccessKey = "<%= env_TRAEFIK_RANCHER_CATTLE_ACCESS_KEY%>"
-    SecretKey = "<%= env_TRAEFIK_RANCHER_CATTLE_SECRET_KEY%>"
-  <%- elsif env_TRAEFIK_RANCHER_MODE == "metadata" -%>
-  [rancher.metadata]
-    IntervalPoll = <%= env_TRAEFIK_RANCHER_INTERVALPOLL%>
-    Prefix = "<%= env_TRAEFIK_RANCHER_PREFIX%>"
-  <%- end -%>
+    <% if env_TRAEFIK_CONSTRAINTS != "" %>
+    constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]
+    <% end -%>
+
+    <%- if env_TRAEFIK_RANCHER_MODE == "api" -%>
+    [providers.rancher.api]
+      endpoint = "<%= env_TRAEFIK_RANCHER_CATTLE_URL%>"
+      accessKey = "<%= env_TRAEFIK_RANCHER_CATTLE_ACCESS_KEY%>"
+      secretKey = "<%= env_TRAEFIK_RANCHER_CATTLE_SECRET_KEY%>"
+    <%- elsif env_TRAEFIK_RANCHER_MODE == "metadata" -%>
+    [providers.rancher.metadata]
+      prefix = "<%= env_TRAEFIK_RANCHER_PREFIX%>"
+    <%- end -%>
 <%- end -%>
 #########################  /rancher fronend/backend defintions / ##########################
 #########################  kubernetes fronend/backend defintions ##########################
 <%- if env_TRAEFIK_K8S_ENABLE == "true" -%>
-[kubernetes]
-  constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]
+  [providers.kubernetes]
+    constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]
 <%- end -%>
 #########################  /kubernetes fronend/backend defintions/ ##########################
 #########################  file base fronend/backend defintions ##########################
 <% if env_TRAEFIK_FILE_ENABLE == "true" -%>
-[file]
-  directory = "<%= env_TRAEFIK_FILE_FOLDER %>"
-  watch = true
+  [providers.file]
+    directory = "<%= env_TRAEFIK_FILE_FOLDER %>"
+    watch = true
 <% end -%>
 #########################  /file base fronend/backend defintions/ ##########################
 #########################  docker based fronend/backend defintions ##########################
 <% if env_TRAEFIK_DOCKER_ENABLE == "true" -%>
-[docker]
-  endpoint = "<%= env_TRAEFIK_DOCKER_ENDPOINT %>"
-  domain = "<%= env_TRAEFIK_DOCKER_DOMAIN %>"
-  exposedByDefault = <%= env_TRAEFIK_DOCKER_EXPOSEDBYDEFAULT %>
-  swarmMode = <%= env_TRAEFIK_DOCKER_SWARMMODE %>
-  constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]
-  <%- if env_TRAEFIK_DOCKER_TLS == "true" -%>
-  [docker.tls]
-    ca = "/mnt/certs/docker.ca.crt"
-    cert = "/mnt/certs/docker.crt"
-    key = "/mnt/certs/docker.key"
-    insecureSkipVerify = "<%= env_TRAEFIK_DOCKER_SKIP_VERIFY %>"
-  <%- end -%>
+  [providers.docker]
+    endpoint = "<%= env_TRAEFIK_DOCKER_ENDPOINT %>"
+    domain = "<%= env_TRAEFIK_DOCKER_DOMAIN %>"
+    exposedByDefault = <%= env_TRAEFIK_DOCKER_EXPOSEDBYDEFAULT %>
+    swarmMode = <%= env_TRAEFIK_DOCKER_SWARMMODE %>
+    constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]
+    <%- if env_TRAEFIK_DOCKER_TLS == "true" -%>
+    [providers.docker.tls]
+      ca = "/mnt/certs/docker.ca.crt"
+      cert = "/mnt/certs/docker.crt"
+      key = "/mnt/certs/docker.key"
+      insecureSkipVerify = "<%= env_TRAEFIK_DOCKER_SKIP_VERIFY %>"
+    <%- end -%>
 <%- end -%>
 #########################  /docker based fronend/backend defintions/ ##########################
 #########################  metrics ##########################
