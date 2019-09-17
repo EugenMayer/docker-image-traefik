@@ -5,6 +5,7 @@
 ## Migration to 2.0
 
 1. rename `TRAEFIK_DOCKER_DOMAIN` to `TRAEFIK_DOCKER_DEFAULT_RULE` and use the new syntax https://docs.traefik.io/providers/docker/#defaultrule 
+2. rename `TRAEFIK_RANCHER_DOMAIN` to `env_TRAEFIK_RANCHER_DEFAULT_RULE` and use the syntax from https://docs.traefik.io/providers/rancher/#defaultrule
 
 ## WAT
 
