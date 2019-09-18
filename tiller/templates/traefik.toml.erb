@@ -38,6 +38,19 @@ end
 [http.middlewares.auth.basicAuth]
     users = <%= adminUsers %>
 <%- end -%>
+
+<%- if env_TRAEFIK_HTTPS_ENABLE == "only" -%>
+[http.middlewares]
+  [http.middlewares.httpsredirect.redirectScheme]
+    scheme = "https"
+
+[http.routers]
+  [http.routers.redirecttohttps]
+    entryPoints = ['http']
+    middlewares = ['httpsredirect']
+    rule = 'HostRegexp(`myhostvar`, `.*`)'
+<%- end -%>
+
 #########################  /middlewares/ ##########################
 
 #########################  tls options ##########################
@@ -63,10 +76,6 @@ end
       readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
       writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
       idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
-  <%- if env_TRAEFIK_HTTPS_ENABLE == "only" -%>
-    [entryPoints.http.redirect]
-      entryPoint = "https"
-  <%- end -%>
   <%- if trusted_ips.length > 0 -%>
     [entryPoints.http.proxyProtocol]
       trustedIPs: <%= trusted_ips %>
