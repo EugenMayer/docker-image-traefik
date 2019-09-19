@@ -18,6 +18,7 @@ end
 [log]
   level = "<%= env_TRAEFIK_LOG_LEVEL %>"
   filePath = "<%= env_TRAEFIK_LOG_FILE %>"
+  debug =  "<%= env_TRAEFIK_DEBUG %>"
 
 [accessLog]
   filePath = "<%= env_TRAEFIK_ACCESS_FILE %>"
@@ -38,8 +39,10 @@ end
 [http.middlewares.auth.basicAuth]
     users = <%= adminUsers %>
 <%- end -%>
+#########################  /middlewares/ ##########################
 
 <%- if env_TRAEFIK_HTTPS_ENABLE == "only" -%>
+#########################  http to https redirect ##########################
 [http.middlewares]
   [http.middlewares.httpsredirect.redirectScheme]
     scheme = "https"
@@ -48,10 +51,17 @@ end
   [http.routers.redirecttohttps]
     entryPoints = ['http']
     middlewares = ['httpsredirect']
-    rule = 'HostRegexp(`myhostvar`, `.*`)'
-<%- end -%>
+    rule = "HostRegexp(`{host:.+}`)"
+    service = "noop"
 
-#########################  /middlewares/ ##########################
+[http.services]
+  # noop service, the URL will be never called
+  [http.services.noop.loadBalancer]
+    [[http.services.noop.loadBalancer.servers]]
+      url = "http://127.0.0.12"
+<%- end -%>
+#########################  /http to https redirect/ ##########################
+
 
 #########################  tls options ##########################
 
@@ -88,7 +98,6 @@ end
   # TLS endpoint
   [entryPoints.https]
     address = ":<%= env_TRAEFIK_HTTPS_PORT %>"
-    compress = <%= env_TRAEFIK_HTTPS_COMPRESSION %>
     [entryPoints.https.transport]
     [entryPoints.https.transport.respondingTimeouts]
       readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"

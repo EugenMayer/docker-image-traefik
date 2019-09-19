@@ -9,12 +9,26 @@
 
 ## WAT
 
-Implements a ENV-Var based configuratoin for your Traefik server running as a docker-image.
+- Implements a ENV-Var based configuratiin for your Traefik server running as a docker-image.
+- Easier to configure due to high-level settings
+- arm builds included
+- rancher (1.x) supported
+
+### WAT: Detailed
+Starting with Traefik v2 the configuration in here is considerably easier to do, since let alone "redirect all to https" setup in v2 became fairly complex.
+The configuration here is rather macro driven, high level. So if you set `TRAEFIK_HTTPS_ENABLE=only` you will get the redirect configured automatically.
+`TRAEFIK_HTTPS_ENABLE=true` will configure a TLS endoint and so on. Similar storry for enable the API backend / Dashboard - just do `TRAEFIK_ADMIN_ENABLE=true`
+
+
+### WAT: Official image
 It bases on top of the official stable release of [Traefik](https://hub.docker.com/_/traefik/) and just adds a bootstrap to generate the `traefik.toml` file from your ENV variables you pass to the container.
 
+
+### WAT: Rancher 
 The image is published under [eugenmayer/traefik](https://hub.docker.com/r/eugenmayer/traefik)
 If you happen to use rancher, you find the corresponding catalog in see the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik)
 
+### WAT: Arm builds
 There are builds for:
 
  - amd64-2.x
@@ -25,8 +39,8 @@ There are builds for:
 
 ## WAT its not
 
-Even though this image will make it a lot easier bootstrapping and running your traefik server in production with various providers, this is not a beginners-boilerplate.
-That said, all your traefik questions go the Forum/Slack and before that, read the [Traefik Documentation](https://docs.traefik.io/). I will not answer "how to do this in Traefik" questions in the issue queue.
+Even though this image will make it a lot easier bootstrapping and running your Traefik server in production with various providers, this is not a beginners-boilerplate.
+That said, all your Traefik questions go the Forum/Slack and before that, read the [Traefik Documentation](https://docs.traefik.io/). I will not answer "how to do this in Traefik" questions in the issue queue.
 Thanks!
 
 **kubernetes**
