@@ -1,16 +1,10 @@
 ## see https://docs.traefik.io/reference/static-configuration/file/
-<%
+<%-
 trusted_ips=[]
 if env_TRAEFIK_TRUSTEDIPS != ""
   trusted_ips= env_TRAEFIK_TRUSTEDIPS.split(',').to_s
 end
-
-adminUsers=[]
-if env_TRAEFIK_ADMIN_AUTH_USERS != ""
-  adminUsers=env_TRAEFIK_ADMIN_AUTH_USERS.split('\n').to_s
-end
-%>
-
+-%>
 [global]
   sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
   checkNewVersion = false
@@ -28,54 +22,6 @@ end
     dialTimeout = "<%= env_TRAEFIK_TIMEOUT_DIAL %>s"
     responseHeaderTimeout = "<%= env_TRAEFIK_TIMEOUT_HEADER %>s"
 
-#########################  middlewares ##########################
-
-<% if %w(true only).include?(env_TRAEFIK_HTTP_COMPRESSION) -%>
-[http.middlewares]
-  [http.middlewares.compress.compress]
-<%- end -%>
-<%- if adminUsers.length > 0 -%>
-  [http.middlewares.auth.basicAuth]
-    users = <%= adminUsers %>
-<%- end -%>
-#########################  /middlewares/ ##########################
-
-<%- if env_TRAEFIK_HTTPS_ENABLE == "only" -%>
-#########################  http to https redirect ##########################
-  [http.middlewares.httpsredirect.redirectScheme]
-    scheme = "https"
-
-[http.routers]
-  [http.routers.redirecttohttps]
-    entryPoints = ['http']
-    middlewares = ['httpsredirect']
-    rule = "HostRegexp(`{host:.+}`)"
-    service = "noop"
-
-[http.services]
-  # noop service, the URL will be never called
-  [http.services.noop.loadBalancer]
-    [[http.services.noop.loadBalancer.servers]]
-      url = "http://127.0.0.12"
-<%- end -%>
-#########################  /http to https redirect/ ##########################
-
-
-#########################  tls options ##########################
-
-<%- if env_TRAEFIK_ADMIN_ENABLE == "true" || %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) -%>
-<%- if env_TRAEFIK_ADMIN_SSL_CERT_FILE != "" -%>
-[[tls.certificates]]
-  certFile = "<%= env_TRAEFIK_ADMIN_SSL_CERT_FILE %>"
-  keyFile = "<%= env_TRAEFIK_ADMIN_SSL_KEY_FILE %>"
-<%- end -%>
-
-[tls.options]
-  [tls.options.defaultTlsOptions]
-    minVersion = "<%= env_TRAEFIK_HTTPS_MIN_TLS %>"
-<%- end -%>
-#########################  /tls options/ ##########################
-
 [entryPoints]
   [entryPoints.http]
     address = ":<%= env_TRAEFIK_HTTP_PORT %>"
@@ -86,9 +32,9 @@ end
       idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
   <%- if trusted_ips.length > 0 -%>
     [entryPoints.http.proxyProtocol]
-      trustedIPs: <%= trusted_ips %>
+      trustedIPs = <%= trusted_ips %>
     [entryPoints.http.forwardedHeaders]
-      trustedIPs: <%= trusted_ips %>
+      trustedIPs = <%= trusted_ips %>
   <%- end -%>
 
 #########################  tls endpoint configuration ##########################
@@ -103,26 +49,17 @@ end
       idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
   <%- if trusted_ips.length > 0 -%>
     [entryPoints.https.proxyProtocol]
-      trustedIPs: <%= trusted_ips %>
+      trustedIPs = <%= trusted_ips %>
     [entryPoints.https.forwardedHeaders]
-      trustedIPs: <%= trusted_ips %>
+      trustedIPs = <%= trusted_ips %>
   <%- end -%>
 <%-end -%>
 #########################  /tls endpoint configuration/ ##########################
 
 #########################  admin backend configuration ##########################
 <%- if env_TRAEFIK_ADMIN_ENABLE == "true" -%>
-  [entryPoints.traefik]
+  [entryPoints.api]
     address = ":<%= env_TRAEFIK_ADMIN_PORT %>"
-
-[http.routers.my-api]
-  rule="PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
-  service="api@internal"
-  <%- if adminUsers.length > 0 -%>
-  middlewares=["auth"]
-  <% end -%>
-  [http.routers.my-api.tls]
-    options = "defaultTlsOptions"
 
 [api]
   insecure = false
@@ -130,9 +67,14 @@ end
   debug = <%= env_TRAEFIK_DEBUG %>
 
 [ping]
-  entryPoint = "traefik"
+  entryPoint = "api"
 <% end -%>
+
+# The rest of the configuration for the dashboard can be found under
+# /mnt/filestorage/default-admin-dashboard.toml since it is dynamic ( router )
+
 #########################  /admin backend configuration/ ##########################
+
 #########################  acme ###########################
 <%- if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) && env_TRAEFIK_ACME_ENABLE == "true" -%>
 [certificatesResolvers.default.acme]
@@ -173,7 +115,7 @@ end
 <%- end -%>
 #########################  /kubernetes fronend/backend defintions/ ##########################
 #########################  file base fronend/backend defintions ##########################
-<% if env_TRAEFIK_FILE_ENABLE == "true" -%>
+<% if env_TRAEFIK_FILE_ENABLE == "true" || env_TRAEFIK_ADMIN_ENABLE == "true" || env_TRAEFIK_HTTP_COMPRESSION == "true" || %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) || env_TRAEFIK_HTTPS_COMPRESSION == "true" -%>
   [providers.file]
     directory = "<%= env_TRAEFIK_FILE_FOLDER %>"
     watch = true
@@ -183,7 +125,7 @@ end
 <% if env_TRAEFIK_DOCKER_ENABLE == "true" -%>
   [providers.docker]
     endpoint = "<%= env_TRAEFIK_DOCKER_ENDPOINT %>"
-    defaultRule = "<%= env_TRAEFIK_DOCKER_DOMAIN || env_TRAEFIK_DOCKER_DEFAULT_RULE %>"
+    defaultRule = "<%= env_TRAEFIK_DOCKER_DEFAULT_RULE %>"
     exposedByDefault = <%= env_TRAEFIK_DOCKER_EXPOSEDBYDEFAULT %>
     swarmMode = <%= env_TRAEFIK_DOCKER_SWARMMODE %>
     constraints = [ <%= env_TRAEFIK_CONSTRAINTS %> ]

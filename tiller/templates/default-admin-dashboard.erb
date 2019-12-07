@@ -1,0 +1,23 @@
+<%-
+adminUsers=[]
+if env_TRAEFIK_ADMIN_AUTH_USERS != ""
+  adminUsers=env_TRAEFIK_ADMIN_AUTH_USERS.split('\n').to_s
+end
+-%>
+
+<%- if env_TRAEFIK_ADMIN_ENABLE == "true" -%>
+[http.routers.my-api]
+  entryPoints = ["api"]
+  rule = "PathPrefix(`/dashboard`) || PathPrefix(`/api`)"
+  service = "api@internal"
+  <%- if adminUsers.length > 0 -%>
+    middlewares = ["auth"]
+  <% end -%>
+  [http.routers.my-api.tls]
+    options = "defaultTlsOptions"
+<% end -%>
+
+<%- if adminUsers.length > 0 -%>
+[http.middlewares.auth.basicAuth]
+  users = <%= adminUsers %>
+<%- end -%>

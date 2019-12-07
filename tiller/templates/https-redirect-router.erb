@@ -1,0 +1,19 @@
+<%- if env_TRAEFIK_HTTPS_ENABLE == "only" -%>
+#########################  http to https redirect ##########################
+[http.middlewares.httpsredirect.redirectScheme]
+  scheme = "https"
+
+[http.routers]
+  [http.routers.redirecttohttps]
+    entryPoints = ['http']
+    middlewares = ['httpsredirect']
+    rule = "HostRegexp(`{host:.+}`)"
+    service = "noop"
+
+[http.services]
+  # noop service, the URL will be never called
+  [http.services.noop.loadBalancer]
+    [[http.services.noop.loadBalancer.servers]]
+      url = "http://127.0.0.12:9999"
+<%- end -%>
+#########################  /http to https redirect/ ##########################

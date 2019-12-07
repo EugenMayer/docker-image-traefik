@@ -7,6 +7,32 @@ environment:
 template_sources: [ "file" ]
 
 defaults:
+  tls-configuration.erb:
+    target: /mnt/filestorage/tls-configuration.toml
+    config:
+      env_TRAEFIK_HTTPS_ENABLE: "false"
+      env_TRAEFIK_ADMIN_ENABLE: "true"
+      env_TRAEFIK_ADMIN_SSL_KEY_FILE: "/mnt/certs/ssl.key"
+      env_TRAEFIK_ADMIN_SSL_CERT_FILE: "/mnt/certs/ssl.crt"
+      env_TRAEFIK_HTTPS_MIN_TLS: "VersionTLS12"
+  https-redirect-router.erb:
+    target: /mnt/filestorage/https-redirect-router.toml
+    config:
+      env_TRAEFIK_HTTPS_ENABLE: "false"
+  compress-middleware.erb:
+    target: /mnt/filestorage/compress-middleware.toml
+    config:
+      env_TRAEFIK_HTTP_COMPRESSION: "true"
+      env_TRAEFIK_HTTPS_COMPRESSION: "true"
+  default-admin-dashboard.erb:
+    target: /mnt/filestorage/default-admin-dashboard.toml
+    config:
+      env_TRAEFIK_ADMIN_ENABLE: "false"
+      env_TRAEFIK_ADMIN_PORT: "8000"
+      env_TRAEFIK_ADMIN_SSL: "false"
+      env_TRAEFIK_ADMIN_STATISTICS: 10
+      env_TRAEFIK_ADMIN_AUTH_METHOD: "basic"
+      env_TRAEFIK_ADMIN_AUTH_USERS: ""
   acme-credentials.erb:
     target: /etc/traefik/acme_credentials
     config:
@@ -28,11 +54,10 @@ defaults:
       env_TRAEFIK_RANCHER_CONSTRAINTS: ""
       env_TRAEFIK_HTTP_PORT: "8080"
       env_TRAEFIK_HTTP_COMPRESSION: "true"
+      env_TRAEFIK_HTTPS_COMPRESSION: "true"
       env_TRAEFIK_TRUSTEDIPS: ""
       env_TRAEFIK_HTTPS_ENABLE: "false"
-      env_TRAEFIK_HTTPS_COMPRESSION: "true"
       env_TRAEFIK_HTTPS_PORT: "8443"
-      env_TRAEFIK_HTTPS_MIN_TLS: "VersionTLS12"
       env_TRAEFIK_ACME_ENABLE: "false"
       env_TRAEFIK_ACME_STORAGE: "/mnt/acme/acme.json"
       env_TRAEFIK_ACME_CHALLENGE: ""

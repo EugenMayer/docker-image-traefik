@@ -7,10 +7,12 @@ services:
     environment:
       TRAEFIK_DOCKER_ENABLE: 'true'
       TRAEFIK_ADMIN_ENABLE: 'true'
+      TRAEFIK_LOG_LEVEL: 'debug'
+      TRAEFIK_DOCKER_DEFAULT_RULE: 'Host(`{{ normalize .Name }}.docker.lan`)'
     ports:
       - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
       - 443:8443
-      - 8000:8000 # admin backend unter http://localhost:8000
+      - 8000:8000 # admin backend under http://localhost:8000/dashboard
     volumes:
       - certs:/mnt/certs
       - filestorage:/mnt/filestorage
@@ -18,10 +20,10 @@ services:
       # mount our docker socket so our docker container can be discovered
       - /var/run/docker.sock:/var/run/docker.sock
 
-  web1: # upstream/frontend 1: http://web1.docker-image-traefik.docker.lan
+  web1: # upstream/frontend 1: http://web1-docker-image-traefik.docker.lan/
     image: eugenmayer/whoami:single
 
-  web2: # upstream/frontend 2: http://web2.docker-image-traefik.docker.lan
+  web2: # upstream/frontend 2: http://web1-docker-image-traefik.docker.lan/
     image: eugenmayer/whoami:single
 
   web3: # upstream/frontend 3: http://foo.bar.lan
