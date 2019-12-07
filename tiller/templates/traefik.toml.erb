@@ -18,7 +18,6 @@ end
 [log]
   level = "<%= env_TRAEFIK_LOG_LEVEL %>"
   filePath = "<%= env_TRAEFIK_LOG_FILE %>"
-  debug =  "<%= env_TRAEFIK_DEBUG %>"
 
 [accessLog]
   filePath = "<%= env_TRAEFIK_ACCESS_FILE %>"
@@ -36,14 +35,13 @@ end
   [http.middlewares.compress.compress]
 <%- end -%>
 <%- if adminUsers.length > 0 -%>
-[http.middlewares.auth.basicAuth]
+  [http.middlewares.auth.basicAuth]
     users = <%= adminUsers %>
 <%- end -%>
 #########################  /middlewares/ ##########################
 
 <%- if env_TRAEFIK_HTTPS_ENABLE == "only" -%>
 #########################  http to https redirect ##########################
-[http.middlewares]
   [http.middlewares.httpsredirect.redirectScheme]
     scheme = "https"
 
@@ -140,10 +138,7 @@ end
 [certificatesResolvers.default.acme]
   email = "<%= env_TRAEFIK_ACME_EMAIL %>"
   storage =  "<%= env_TRAEFIK_ACME_STORAGE %>"
-  OnHostRule = <%= env_TRAEFIK_ACME_ONHOSTRULE %>
   caServer = "<%= env_TRAEFIK_ACME_CASERVER %>"
-  entryPoint = "https"
-  acmeLogging = <%= env_TRAEFIK_ACME_LOGGIN %>
   <%- if env_TRAEFIK_ACME_CHALLENGE == "http" -%>
   # HTTP-01
   [certificatesResolvers.default.acme.httpChallenge]

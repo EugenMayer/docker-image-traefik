@@ -138,9 +138,7 @@ For configuring your endpoints with SSL Certificates, ACME is one of the power f
 - TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS=""             # Set you credentials needed for your DNS provider. Use a `key1=value1;key2=value2` syntax, e.g. for Cloudflare `CF_API_EMAIL=aasdas@gmx.de;CF_API_KEY=adqweq121` - see [the traefik documentation](https://docs.traefik.io/configuration/acme/#provider) for the avaiable keys
 - TRAEFIK_ACME_CHALLENGE_DNS_DELAY=""                   # Set traefik acme dns challenge delayBeforeCheck. [acme dns challenge](https://docs.traefik.io/configuration/acme/#acmednschallenge)
 - TRAEFIK_ACME_EMAIL="test@traefik.io"					# Default email
-- TRAEFIK_ACME_ONHOSTRULE="true"						# ACME OnHostRule parameter
 - TRAEFIK_ACME_CASERVER="https://acme-v02.api.letsencrypt.org/directory"						# ACME caServer parameter
-- TRAEFIK_ACME_LOGGING="false"                          # enable debug logging for ACME operations. Useful if you look for ACME issues
 
 #### Provider: File backend
 - TRAEFIK_FILE_ENABLE="false"							# Enable/disable file backend
