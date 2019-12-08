@@ -129,8 +129,9 @@ Your admin dashboard will be accessible on either the `http` or the `https` enpo
 
 #### ACME
 For configuring your endpoints with SSL Certificates, ACME is one of the power features of [Traefik](https://traefik.io)
+The name of the resolve will be `default` - so this is what you will need to set your router to using `routers.myroouter.tls.certresolver: default`
 
-- TRAEFIK_ACME_ENABLE="false"							# Enable/disable traefik ACME feature. [acme](https://docs.traefik.io/configuration/acme/)
+- TRAEFIK_ACME_ENABLE="false"							# Enable/disable traefik ACME feature. [acme](https://docs.traefik.io/configuration/acme/) - the resolver will be named `default`
 - TRAEFIK_ACME_CHALLENGE="http"                         # Set http | dns to activate traefik acme challenge mode. 
 - TRAEFIK_ACME_CHALLENGE_HTTP_ENTRYPOINT="http"         # Set traefik acme http challenge entrypoint. [acme http challenge](https://docs.traefik.io/configuration/acme/#acmehttpchallenge)
 - TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER=""                # Set traefik acme dns challenge provider. You need to manually add configuration env variables accordingly the dns provider you use. [acme dns provider](https://docs.traefik.io/configuration/acme/#provider)
@@ -140,7 +141,7 @@ For configuring your endpoints with SSL Certificates, ACME is one of the power f
 - TRAEFIK_ACME_CASERVER="https://acme-v02.api.letsencrypt.org/directory"						# ACME caServer parameter
 
 #### Provider: File backend
-- TRAEFIK_FILE_ENABLE="false"							# Enable/disable file backend
+- TRAEFIK_FILE_ENABLE="false"							# Enable/disable file backend - this is mostly enabled anyway to offer https redirects, dashboard on such features
 - TRAEFIK_FILE_FOLDER="/mnt/filestorage"                # where your custom rules will be located. Keep that path its a volume, create `/mnt/filestorage/frontend1.toml` .. `/mnt/filestorage/frontend2.toml` for reach of your frontend/backend combinations inside that folder. Its watched automatically
 
 #### Provider: Kubernetes
@@ -201,8 +202,8 @@ Then start the stack and wait for about 3 minutes for all certificates to get in
 docker-compose -f docker-compose-acme-dns.yml up
 
 
-wget https://web1.docker-image-traefik.company.com
-wget https://web2.docker-image-traefik.company.com
+wget https://web1-docker-image-traefik.company.com
+wget https://web2-docker-image-traefik.company.com
 wget https://foo.company.com
 ``` 
 

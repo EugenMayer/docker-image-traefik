@@ -40,18 +40,21 @@ services:
   web1: # upstream/frontend 1: https://web1-docker-image-traefik.${YOUR_BASE_DOMAIN}
     image: containous/whoami
     labels:
-      traefik.http.routers.web3.tls: "true"
+      traefik.http.routers.web1.tls: "true"
+      traefik.http.routers.web1.tls.certresolver: "default"
+
   web2: # upstream/frontend 2: http://web2-docker-image-traefik.${YOUR_BASE_DOMAIN}
     image: containous/whoami
     labels:
-      traefik.http.routers.web3.tls: "true"
+      traefik.http.routers.web2.tls: "true"
+      traefik.http.routers.web2.tls.certresolver: "default"
 
   web3: # upstream/frontend 3: http://foo.bar.lan
     image: containous/whoami
     labels:
-      traefik.http.routers.web3.tls: "true"
       traefik.http.routers.web3.rule: "Host(`foo.${YOUR_BASE_DOMAIN}`)"
-
+      traefik.http.routers.web3.tls: "true"
+      traefik.http.routers.web3.tls.certresolver: "default"
 volumes:
   acme:
     driver: local
