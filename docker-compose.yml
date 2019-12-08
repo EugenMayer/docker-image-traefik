@@ -7,6 +7,7 @@ services:
     environment:
       TRAEFIK_DOCKER_ENABLE: 'true'
       TRAEFIK_ADMIN_ENABLE: 'true'
+      TRAEFIK_ADMIN_SSL: 'true'
       TRAEFIK_LOG_LEVEL: 'debug'
       TRAEFIK_DOCKER_DEFAULT_RULE: 'Host(`{{ normalize .Name }}.docker.lan`)'
     ports:
@@ -19,6 +20,8 @@ services:
       - acme:/mnt/acme
       # mount our docker socket so our docker container can be discovered
       - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      traefik.enable: false
 
   web1: # upstream/frontend 1: http://web1-docker-image-traefik.docker.lan/
     image: eugenmayer/whoami:single
@@ -29,7 +32,7 @@ services:
   web3: # upstream/frontend 3: http://foo.bar.lan
     image: eugenmayer/whoami:single
     labels:
-      traefik.http.routers.router0.rule: "Host(`foo.bar.lan`)"
+      traefik.http.routers.web3.rule: "Host(`foo.bar.lan`)"
 
 volumes:
   acme:

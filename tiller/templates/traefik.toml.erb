@@ -26,10 +26,10 @@ end
   [entryPoints.http]
     address = ":<%= env_TRAEFIK_HTTP_PORT %>"
     [entryPoints.http.transport]
-    [entryPoints.http.transport.respondingTimeouts]
-      readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
-      writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
-      idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
+      [entryPoints.http.transport.respondingTimeouts]
+        readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
+        writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
+        idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
   <%- if trusted_ips.length > 0 -%>
     [entryPoints.http.proxyProtocol]
       trustedIPs = <%= trusted_ips %>
@@ -43,10 +43,10 @@ end
   [entryPoints.https]
     address = ":<%= env_TRAEFIK_HTTPS_PORT %>"
     [entryPoints.https.transport]
-    [entryPoints.https.transport.respondingTimeouts]
-      readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
-      writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
-      idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
+      [entryPoints.https.transport.respondingTimeouts]
+        readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
+        writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
+        idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
   <%- if trusted_ips.length > 0 -%>
     [entryPoints.https.proxyProtocol]
       trustedIPs = <%= trusted_ips %>
@@ -57,21 +57,26 @@ end
 #########################  /tls endpoint configuration/ ##########################
 
 #########################  admin backend configuration ##########################
-<%- if env_TRAEFIK_ADMIN_ENABLE == "true" -%>
   [entryPoints.api]
-    address = ":<%= env_TRAEFIK_ADMIN_PORT %>"
+    address = ":<%= env_TRAEFIK_API_PORT %>"
+    [entryPoints.api.transport]
+      [entryPoints.api.transport.respondingTimeouts]
+        readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
+        writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
+        idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
 
 [api]
   insecure = false
+  <%- if env_TRAEFIK_ADMIN_ENABLE == "true" -%>
   dashboard = true
+  <% end -%>
   debug = <%= env_TRAEFIK_DEBUG %>
 
 [ping]
   entryPoint = "api"
-<% end -%>
 
 # The rest of the configuration for the dashboard can be found under
-# /mnt/filestorage/default-admin-dashboard.toml since it is dynamic ( router )
+# /mnt/filestorage/generated-dashboard.toml since it is dynamic ( router )
 
 #########################  /admin backend configuration/ ##########################
 
@@ -143,7 +148,7 @@ end
 <% if env_TRAEFIK_METRICS_ENABLE == "true" %>
 [metrics]
   [metrics.statistics]
-    RecentErrors = <%= env_TRAEFIK_ADMIN_STATISTICS %>
+    RecentErrors = <%= env_TRAEFIK_METRICS_STATISTICS %>
     <% if env_TRAEFIK_METRICS_EXPORTER == "prometheus" %>
     # prometheus metrics
     [metrics.<%= env_TRAEFIK_METRICS_EXPORTER %>]
@@ -151,7 +156,7 @@ end
       buckets=<%= env_TRAEFIK_METRICS_PROMETHEUS_BUCKETS %>
     <% elsif env_TRAEFIK_METRICS_EXPORTER != "" %>
     # any other metric server
-    [metrics.<%= env_TRAEFIK_METRICS_EXPORTER %>]å
+    [metrics.<%= env_TRAEFIK_METRICS_EXPORTER %>]
       address = "<%= env_TRAEFIK_METRICS_ADDRESS %>"
       pushInterval = "<%= env_TRAEFIK_METRICS_PUSH %>s"
     <% end -%>

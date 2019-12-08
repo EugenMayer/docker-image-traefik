@@ -1,8 +1,9 @@
+[http.middlewares]
+  [http.middlewares.httpsredirect.redirectScheme]
+    scheme = "https"
+
 <%- if env_TRAEFIK_HTTPS_ENABLE == "only" -%>
 #########################  http to https redirect ##########################
-[http.middlewares.httpsredirect.redirectScheme]
-  scheme = "https"
-
 [http.routers]
   [http.routers.redirecttohttps]
     entryPoints = ['http']

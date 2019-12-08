@@ -10,7 +10,7 @@
 ## WAT
 
 - Implements a ENV-Var based configuratiin for your Traefik server running as a docker-image.
-- Easier to configure due to high-level settings
+- Easier to configure then classic Treafik 2.0  due to high-level settings like "enable dashboard" or "always redirect"
 - arm builds included
 - rancher (1.x) supported
 
@@ -118,13 +118,16 @@ Use this as a starting point / what you can do with this configuration, read the
 - TRAEFIK_HTTPS_MIN_TLS="VersionTLS12"					# Minimal allowed tls version to accept connections from
 - TRAEFIK_HTTPS_COMPRESSION="true"                      # Enable https compression
 
-#### Endpoint Admin
+
+#### Endpoint API
+- TRAEFIK_API_PORT=8000								    # api/dashboard/ping n port > 1024 due to run as non privileged user. Will be used for /api /ping and /dashboard
+
+#### Admin / Dashboard /  API
+Your admin dashboard will be accessible on the `TRAEFIK_API_PORT` - default is `8000` - so for example `https://localhosts:8000/dashboard/`
 - TRAEFIK_ADMIN_ENABLE="false"                          # "true" enables api, rest, ping and webui
-- TRAEFIK_ADMIN_PORT=8000								# admin port > 1024 due to run as non privileged user
-- TRAEFIK_ADMIN_SSL=false								# "true" enables https on api, rest, ping and webui using  `TRAEFIK_SSL_CRT` certificate
+- TRAEFIK_ADMIN_SSL=true								# "true" enables https on `/dashboard/` 
 - TRAEFIK_ADMIN_SSL_KEY_FILE="/mnt/certs/ssl.key"       # Default admin backend key file - cert will be auto-generated. Use /mnt/certs/custom.key and put it on the volume to have your own
 - TRAEFIK_ADMIN_SSL_CRT_FILE="/mnt/certs/ssl.cert"      # Default admin backend crt file - cert will be auto-generated. Use /mnt/certs/custom.cert and put it on the volume to have your own
-- TRAEFIK_ADMIN_STATISTICS=10                           # Enable more detailed statistics
 - TRAEFIK_ADMIN_AUTH_METHOD="basic"                     # Auth method to use on api, rest, ping and webui. basic | digest
 - TRAEFIK_ADMIN_AUTH_USERS=""                           # Basic or digest users created with htpasswd or htdigest. 
 
@@ -168,6 +171,7 @@ For configuring your endpoints with SSL Certificates, ACME is one of the power f
 - TRAEFIK_CONSTRAINTS=""                                # Traefik constraint param. EG: \\"tag==api\\" - see https://docs.traefik.io/configuration/commons/#constraints
 
 #### Metrics
+- TRAEFIK_METRICS_STATISTICS=10                           # Enable more detailed statistics
 - TRAEFIK_METRICS_ENABLE="false"                        # Enable/disable traefik [metrics](https://docs.traefik.io/configuration/metrics/)  
 - TRAEFIK_METRICS_EXPORTER=""                           # Metrics exporter prometheus | datadog | statsd | influxdb 
 - TRAEFIK_METRICS_PUSH="10"                             # Metrics exporter push interval (s). datadog | statsd | influxdb

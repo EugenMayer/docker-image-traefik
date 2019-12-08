@@ -1,14 +1,20 @@
-[tls]
 #########################  tls options ##########################
-<%- if env_TRAEFIK_ADMIN_ENABLE == "true" || %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) -%>
-  <%- if env_TRAEFIK_ADMIN_SSL_CERT_FILE != "" -%>
+<%- if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) -%>
+[tls]
+  <%- if env_TRAEFIK_SSL_CERT_FILE != "" -%>
   [[tls.certificates]]
-    certFile = "<%= env_TRAEFIK_ADMIN_SSL_CERT_FILE %>"
-    keyFile = "<%= env_TRAEFIK_ADMIN_SSL_KEY_FILE %>"
+    certFile = "<%= env_TRAEFIK_SSL_CERT_FILE %>"
+    keyFile = "<%= env_TRAEFIK_SSL_KEY_FILE %>"
   <%- end -%>
 
   [tls.options]
-    [tls.options.defaultTlsOptions]
+    [tls.options.default]
       minVersion = "<%= env_TRAEFIK_HTTPS_MIN_TLS %>"
+
+[tls.stores]
+  [tls.stores.default]
+    [tls.stores.default.defaultCertificate]
+      certFile = "<%= env_TRAEFIK_SSL_CERT_FILE %>"
+      keyFile  = "<%= env_TRAEFIK_SSL_CERT_FILE %>"
 <%- end -%>
 #########################  /tls options/ ##########################
