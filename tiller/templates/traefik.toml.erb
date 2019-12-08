@@ -38,7 +38,7 @@ end
   <%- end -%>
 
 #########################  tls endpoint configuration ##########################
-<% if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) -%>
+<% if %w(true only).include?(env_TRAEFIK_HTTPS_ENABLE) ||  (env_TRAEFIK_ADMIN_ENABLE == "true" && env_TRAEFIK_ADMIN_SSL == "true" ) -%>
   # TLS endpoint
   [entryPoints.https]
     address = ":<%= env_TRAEFIK_HTTPS_PORT %>"
@@ -57,23 +57,16 @@ end
 #########################  /tls endpoint configuration/ ##########################
 
 #########################  admin backend configuration ##########################
-  [entryPoints.api]
-    address = ":<%= env_TRAEFIK_API_PORT %>"
-    [entryPoints.api.transport]
-      [entryPoints.api.transport.respondingTimeouts]
-        readTimeout = "<%= env_TRAEFIK_TIMEOUT_READ %>s"
-        writeTimeout = "<%= env_TRAEFIK_TIMEOUT_WRITE %>s"
-        idleTimeout = "<%= env_TRAEFIK_TIMEOUT_IDLE %>s"
-
 [api]
   insecure = false
   <%- if env_TRAEFIK_ADMIN_ENABLE == "true" -%>
   dashboard = true
   <% end -%>
+
   debug = <%= env_TRAEFIK_DEBUG %>
 
 [ping]
-  entryPoint = "api"
+  entryPoint = "http"
 
 # The rest of the configuration for the dashboard can be found under
 # /mnt/filestorage/generated-dashboard.toml since it is dynamic ( router )

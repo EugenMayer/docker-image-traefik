@@ -12,8 +12,7 @@ services:
       TRAEFIK_DOCKER_DEFAULT_RULE: 'Host(`{{ normalize .Name }}.docker.lan`)'
     ports:
       - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
-      - 443:8443
-      - 8000:8000 # admin backend under http://localhost:8000/dashboard
+      - 443:8443 # admin backend under https://localhost/dashboard
     volumes:
       - certs:/mnt/certs
       - filestorage:/mnt/filestorage

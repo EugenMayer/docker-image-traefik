@@ -19,17 +19,17 @@ end
 [http.routers]
 <%- if env_TRAEFIK_ADMIN_SSL == "true" -%>
   [http.routers.my-api-https]
-    entryPoints = ["api"]
-    rule = "PathPrefix(`/dashboard`) || PathPrefix(`/api`)"
+    entryPoints = ["https"]
+    rule = "PathPrefix(`/dashboard/`) || PathPrefix(`/api`)"
     service = "api@internal"
     middlewares = [<%= middlewaresHttps.join(",") %>]
     [http.routers.my-api-https.tls]
-      options = dashboard
+      options = "dashboard"
 <% end -%>
 
   [http.routers.my-api-http]
-    entryPoints = ["api"]
-    rule = "PathPrefix(`/dashboard`) || PathPrefix(`/api`)"
+    entryPoints = ["http"]
+    rule = "PathPrefix(`/dashboard/`) || PathPrefix(`/api`)"
     service = "api@internal"
     middlewares = [<%= middlewaresHttp.join(",") %>]
 
@@ -47,5 +47,4 @@ end
   [tls.options]
     [tls.options.dashboard]
       minVersion = "VersionTLS12"
-      sniStrict = false
 <% end -%>

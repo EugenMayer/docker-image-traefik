@@ -118,14 +118,10 @@ Use this as a starting point / what you can do with this configuration, read the
 - TRAEFIK_HTTPS_MIN_TLS="VersionTLS12"					# Minimal allowed tls version to accept connections from
 - TRAEFIK_HTTPS_COMPRESSION="true"                      # Enable https compression
 
-
-#### Endpoint API
-- TRAEFIK_API_PORT=8000								    # api/dashboard/ping n port > 1024 due to run as non privileged user. Will be used for /api /ping and /dashboard
-
 #### Admin / Dashboard /  API
-Your admin dashboard will be accessible on the `TRAEFIK_API_PORT` - default is `8000` - so for example `https://localhosts:8000/dashboard/`
-- TRAEFIK_ADMIN_ENABLE="false"                          # "true" enables api, rest, ping and webui
-- TRAEFIK_ADMIN_SSL=true								# "true" enables https on `/dashboard/` 
+Your admin dashboard will be accessible on either the `http` or the `https` enpoint, so `http(s)://localhosts/dashboard/`
+- TRAEFIK_ADMIN_ENABLE="false"                          # "true" enables api, rest, ping and dashboard
+- TRAEFIK_ADMIN_SSL=true								# "true" enables https on `/dashboard/`, so `https://localhosts/dashboard/`
 - TRAEFIK_ADMIN_SSL_KEY_FILE="/mnt/certs/ssl.key"       # Default admin backend key file - cert will be auto-generated. Use /mnt/certs/custom.key and put it on the volume to have your own
 - TRAEFIK_ADMIN_SSL_CRT_FILE="/mnt/certs/ssl.cert"      # Default admin backend crt file - cert will be auto-generated. Use /mnt/certs/custom.cert and put it on the volume to have your own
 - TRAEFIK_ADMIN_AUTH_METHOD="basic"                     # Auth method to use on api, rest, ping and webui. basic | digest

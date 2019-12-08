@@ -27,8 +27,7 @@ services:
 
     ports:
       - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
-      - 443:8443
-      - 8000:8000 # admin backend under http://localhost:8000
+      - 443:8443 # admin backend under https://localhost/dashboard
     volumes:
       - certs:/mnt/certs
       - filestorage:/mnt/filestorage
@@ -38,20 +37,20 @@ services:
     labels:
       traefik.enable: false
 #
-#  web1: # upstream/frontend 1: https://web1-docker-image-traefik.${YOUR_BASE_DOMAIN}
-#    image: containous/whoami
-#    labels:
-#      traefik.http.routers.web3.tls: "true"
-#  web2: # upstream/frontend 2: http://web2-docker-image-traefik.${YOUR_BASE_DOMAIN}
-#    image: containous/whoami
-#    labels:
-#      traefik.http.routers.web3.tls: "true"
-#
-#  web3: # upstream/frontend 3: http://foo.bar.lan
-#    image: containous/whoami
-#    labels:
-#      traefik.http.routers.web3.tls: "true"
-#      traefik.http.routers.web3.rule: "Host(`foo.${YOUR_BASE_DOMAIN}`)"
+  web1: # upstream/frontend 1: https://web1-docker-image-traefik.${YOUR_BASE_DOMAIN}
+    image: containous/whoami
+    labels:
+      traefik.http.routers.web3.tls: "true"
+  web2: # upstream/frontend 2: http://web2-docker-image-traefik.${YOUR_BASE_DOMAIN}
+    image: containous/whoami
+    labels:
+      traefik.http.routers.web3.tls: "true"
+
+  web3: # upstream/frontend 3: http://foo.bar.lan
+    image: containous/whoami
+    labels:
+      traefik.http.routers.web3.tls: "true"
+      traefik.http.routers.web3.rule: "Host(`foo.${YOUR_BASE_DOMAIN}`)"
 
 volumes:
   acme:
