@@ -9,13 +9,14 @@
 
 ## WAT
 
-- Implements a ENV-Var based configuratiin for your Traefik server running as a docker-image.
+- Implements a ENV-Var based configuration for your Traefik server running as a docker-image.
 - Easier to configure then classic Treafik 2.0  due to high-level settings like "enable dashboard" or "always redirect"
 - arm builds included
 - rancher (1.x) supported
 
 ### WAT: Detailed
-Starting with Traefik v2 the configuration in here is considerably easier to do, since let alone "redirect all to https" setup in v2 became fairly complex.
+Starting with Traefik v2 the configuration using the ENV vars here can be considerably easier, since let high level features like "enabled dashboard" or  "redirect all to https" can be setup using one ENV vars, being fairly complexing in the original configuration thouugh.
+
 The configuration here is rather macro driven, high level. So if you set `TRAEFIK_HTTPS_ENABLE=only` you will get the redirect configured automatically.
 `TRAEFIK_HTTPS_ENABLE=true` will configure a TLS endoint and so on. Similar storry for enable the API backend / Dashboard - just do `TRAEFIK_ADMIN_ENABLE=true`
 
@@ -40,7 +41,7 @@ There are builds for:
 ## WAT its not
 
 Even though this image will make it a lot easier bootstrapping and running your Traefik server in production with various providers, this is not a beginners-boilerplate.
-That said, all your Traefik questions go the Forum/Slack and before that, read the [Traefik Documentation](https://docs.traefik.io/). I will not answer "how to do this in Traefik" questions in the issue queue.
+That said, all your Traefik questions should go to  the forum and before that, read the [Traefik Documentation](https://docs.traefik.io/) i suppose. I will not consider answering "how to do this in Traefik" questions in the issue queue.
 Thanks!
 
 **kubernetes**
@@ -60,7 +61,7 @@ docker run -e TRAEFIK_DOCKER_ENABLE=true eugenamyer/traefik
 ```
 
 ```yaml
-version: "2"
+version: "3"
 
 services: 
   traefik:
