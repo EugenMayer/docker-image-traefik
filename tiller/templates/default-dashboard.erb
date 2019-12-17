@@ -14,8 +14,8 @@ if env_TRAEFIK_ADMIN_SSL == "true"
 end
 
 dashboardRule = "PathPrefix(`/dashboard/`) || PathPrefix(`/api`)"
-if env_TRAEFIK_ADMIN_DOMAIN != ""
-  dashboardRule = "Host (`$DOMAIN`)"
+if env_TRAEFIK_ADMIN_DOMAIN != "" && env_TRAEFIK_ADMIN_DOMAIN != nil
+  dashboardRule = "Host (`#{env_TRAEFIK_ADMIN_DOMAIN}`)"
 end
 -%>
 
@@ -24,7 +24,7 @@ end
 <%- if env_TRAEFIK_ADMIN_SSL == "true" -%>
   [http.routers.my-api-https]
     entryPoints = ["https"]
-    rule = "PathPrefix(`/dashboard/`) || PathPrefix(`/api`)"
+    rule = "<%=dashboardRule %>"
     service = "api@internal"
     middlewares = [<%= middlewaresHttps.join(",") %>]
     [http.routers.my-api-https.tls]

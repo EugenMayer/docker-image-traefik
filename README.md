@@ -126,6 +126,7 @@ Use this as a starting point / what you can do with this configuration, read the
 #### Admin / Dashboard /  API
 Your admin dashboard will be accessible on either the `http` or the `https` enpoint, so `http(s)://localhosts/dashboard/`
 - TRAEFIK_ADMIN_ENABLE="false"                          # "true" enables api, rest, ping and dashboard
+- TRAEFIK_ADMIN_DOMAIN="traefik.company.tld             # If you do not set `TRAEFIK_ADMIN_DOMAIN`, on every router the path `/dashboard/` and `/api/` will be matched to the dashboard .. crazy.
 - TRAEFIK_ADMIN_SSL=true								# "true" enables https on `/dashboard/`, so `https://localhosts/dashboard/`
 - TRAEFIK_ADMIN_SSL_KEY_FILE="/mnt/certs/ssl.key"       # Default admin backend key file - cert will be auto-generated. Use /mnt/certs/custom.key and put it on the volume to have your own
 - TRAEFIK_ADMIN_SSL_CRT_FILE="/mnt/certs/ssl.cert"      # Default admin backend crt file - cert will be auto-generated. Use /mnt/certs/custom.cert and put it on the volume to have your own

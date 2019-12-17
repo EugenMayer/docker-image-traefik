@@ -10,6 +10,7 @@ services:
       TRAEFIK_ADMIN_SSL: 'true'
       TRAEFIK_LOG_LEVEL: 'info'
       TRAEFIK_DOCKER_DEFAULT_RULE: 'Host(`{{ normalize .Name }}.docker.lan`)'
+      TRAEFIK_ADMIN_DOMAIN: ${TRAEFIK_ADMIN_DOMAIN}
     ports:
       - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
       - 443:8443 # admin backend under https://localhost/dashboard
