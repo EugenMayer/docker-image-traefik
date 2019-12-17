@@ -6,6 +6,10 @@
 
 1. rename `TRAEFIK_DOCKER_DOMAIN` to `TRAEFIK_DOCKER_DEFAULT_RULE` and use the new syntax https://docs.traefik.io/providers/docker/#defaultrule 
 2. rename `TRAEFIK_RANCHER_DOMAIN` to `env_TRAEFIK_RANCHER_DEFAULT_RULE` and use the syntax from https://docs.traefik.io/providers/rancher/#defaultrule
+3. optionally (but strongly encouraged ) add `TRAEFIK_ADMIN_DOMAIN` env variable and set it to the domain you want to use for your dashboard like `traefik.company.tld` - you can access the dasboard undert `https://traefik.company.tld/dashboard/` then ( trailing slash is mandatory )
+4. Be sure to migrate all your old `.toml` files for `frontends/backends` to the new `routers/services` syntax, see [this reference](https://docs.traefik.io/reference/dynamic-configuration/file/)
+
+Hint: If you do not set `TRAEFIK_ADMIN_DOMAIN`, on every router the path `/dashboard/` and `/api/` will be matched to the dashboard .. crazy.
 
 ## WAT
 

@@ -13,6 +13,10 @@ if env_TRAEFIK_ADMIN_SSL == "true"
   middlewaresHttp.push('"dashboard-ssl-redirect"')
 end
 
+dashboardRule = "PathPrefix(`/dashboard/`) || PathPrefix(`/api`)"
+if env_TRAEFIK_ADMIN_DOMAIN != ""
+  dashboardRule = "Host (`$DOMAIN`)"
+end
 -%>
 
 <%- if env_TRAEFIK_ADMIN_ENABLE == "true" -%>
@@ -29,7 +33,7 @@ end
 
   [http.routers.my-api-http]
     entryPoints = ["http"]
-    rule = "PathPrefix(`/dashboard/`) || PathPrefix(`/api`)"
+    rule = "<%=dashboardRule %>"
     service = "api@internal"
     middlewares = [<%= middlewaresHttp.join(",") %>]
 
