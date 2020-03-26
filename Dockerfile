@@ -1,4 +1,4 @@
-FROM traefik:2.1
+FROM traefik:2.2
 MAINTAINER Eugen Mayer <eugen.mayer@kontextwork.de>
 
 ADD bin/ /usr/local/bin/
