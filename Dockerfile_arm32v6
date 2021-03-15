@@ -1,4 +1,4 @@
-FROM arm32v6/traefik:2.2
+FROM arm32v6/traefik:2.4
 MAINTAINER Eugen Mayer <eugen.mayer@kontextwork.de>
 
 ADD bin/ /usr/local/bin/
