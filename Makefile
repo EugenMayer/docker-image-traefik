@@ -3,7 +3,7 @@ release: build push
 build:
 	docker pull traefik:2.4
 	docker pull arm32v6/traefik:2.4
-	docker pull arm64v8/traefik:2.$
+	docker pull arm64v8/traefik:2.4
 	docker build -t eugenmayer/traefik:2.x .
 	docker build -t eugenmayer/traefik:arm64-2.x . -f Dockerfile_arm64
 	docker build -t eugenmayer/traefik:arm32v6-2.x . -f Dockerfile_arm32v6
