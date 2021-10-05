@@ -165,7 +165,7 @@ The name of the resolve will be `default` - so this is what you will need to set
 - TRAEFIK_CONSTRAINTS=""                                # Traefik constraint param. EG: \\"tag==api\\" - see https://docs.traefik.io/configuration/commons/#constraints
 
 #### Provider: Docker
-- TRAEFIK_DOCKER_ENABLE="false"                         # use true to enable the [docker provder](https://docs.traefik.io/configuration/backends/docker/)
+- TRAEFIK_DOCKER_ENABLE="false"                         # use true to enable the [docker provider](https://docs.traefik.io/configuration/backends/docker/)
 - TRAEFIK_DOCKER_ENDPOINT="unix:///var/run/docker.sock" # how to access your docker engine - mount this socket or define a `tcp://` based connection
 - TRAEFIK_DOCKER_DEFAULT_RULE="Host(`{{ normalize .Name }}`)"              # the default domain to generate frontends for
 - TRAEFIK_DOCKER_EXPOSEDBYDEFAULT="true"                # should all docker-containers in the engine be parsed by their exposed ports
