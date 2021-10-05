@@ -168,7 +168,7 @@ The name of the resolve will be `default` - so this is what you will need to set
 - TRAEFIK_DOCKER_ENABLE="false"                         # use true to enable the [docker provider](https://docs.traefik.io/configuration/backends/docker/)
 - TRAEFIK_DOCKER_ENDPOINT="unix:///var/run/docker.sock" # how to access your docker engine - mount this socket or define a `tcp://` based connection
 - TRAEFIK_DOCKER_DEFAULT_RULE="Host(`{{ normalize .Name }}`)"              # the default domain to generate frontends for
-- TRAEFIK_DOCKER_EXPOSEDBYDEFAULT="true"                # should all docker-containers in the engine be parsed by their exposed ports
+- TRAEFIK_DOCKER_EXPOSEDBYDEFAULT="true"                # should all docker-containers in the engine be parsed by their exposed ports [see docs](https://doc.traefik.io/traefik/providers/docker/#exposedbydefault)
 - TRAEFIK_DOCKER_SWARMMODE="false"                      # use `tcp://` for accessing a swarm cluster. If you set this, put your TLS creds under `/mnt/certs/docker.ca.crt, /mnt/certs/docker.crt, /mnt/certs/docker.ca.key`
 - TRAEFIK_DOCKER_SKIP_VERIFY="false"                    # when set, the connection to the upstream swarm cluster is not verified ( TLS )
 - TRAEFIK_CONSTRAINTS=""                                # Traefik constraint param. EG: \\"tag==api\\" - see https://docs.traefik.io/configuration/commons/#constraints
