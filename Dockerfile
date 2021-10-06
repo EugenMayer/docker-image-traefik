@@ -1,5 +1,6 @@
 FROM traefik:2.5
 MAINTAINER Eugen Mayer <eugen.mayer@kontextwork.de>
+LABEL org.opencontainers.image.source https://github.com/eugenmayer/docker-image-traefik
 
 ADD bin/ /usr/local/bin/
 ADD configuration-entrypoint.sh /configuration-entrypoint.sh

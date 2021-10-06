@@ -2,23 +2,23 @@ release: build push
 
 build:
 	docker pull traefik:2.5
-	docker pull arm32v6/traefik:2.5
-	docker pull arm64v8/traefik:2.5
-	docker build -t eugenmayer/traefik:2.x .
-	docker build -t eugenmayer/traefik:arm64-2.x . -f Dockerfile_arm64
-	docker build -t eugenmayer/traefik:arm32v6-2.x . -f Dockerfile_arm32v6
+	docker build -t ghcr.io/eugenmayer/traefik:2.x .
 
-push:
-	source ./version && docker tag eugenmayer/traefik:2.x eugenmayer/traefik:"$${VERSION}"
-	source ./version && docker tag eugenmayer/traefik:arm64-2.x eugenmayer/traefik:arm64-"$${VERSION}"
-	source ./version && docker tag eugenmayer/traefik:arm32v6-2.x eugenmayer/traefik:arm32v7-2.x
-	source ./version && docker tag eugenmayer/traefik:arm32v6-2.x eugenmayer/traefik:arm32v6-"$${VERSION}"
-	source ./version && docker tag eugenmayer/traefik:arm32v6-2.x eugenmayer/traefik:arm32v7-"$${VERSION}"
+push: tag-docker-hub tag-github push-github push-hub
+	echo "done pushing"
+
+push-github:
+	docker push ghcr.io/eugenmayer/traefik:2.x
+	source ./version && docker push ghcr.io/eugenmayer/traefik:$${VERSION}
+
+push-hub:
 	docker push eugenmayer/traefik:2.x
-	docker push eugenmayer/traefik:arm64-2.x
-	docker push eugenmayer/traefik:arm32v6-2.x
-	docker push eugenmayer/traefik:arm32v7-2.x
 	source ./version && docker push eugenmayer/traefik:$${VERSION}
-	source ./version && docker push eugenmayer/traefik:arm64-"$${VERSION}"
-	source ./version && docker push eugenmayer/traefik:arm32v6-"$${VERSION}"
-	source ./version && docker push eugenmayer/traefik:arm32v7-"$${VERSION}"
+
+tag-docker-hub:
+	source ./version && docker tag ghcr.io/eugenmayer/traefik:2.x eugenmayer/traefik:2.x
+	source ./version && docker tag eugenmayer/traefik:2.x eugenmayer/traefik:"$${VERSION}"
+
+tag-github:
+	source ./version && docker tag ghcr.io/eugenmayer/traefik:2.x ghcr.io/eugenmayer/traefik:"$${VERSION}"
+
