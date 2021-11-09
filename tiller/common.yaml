@@ -95,7 +95,8 @@ defaults:
       env_TRAEFIK_DOCKER_EXPOSEDBYDEFAULT: 'true'
       env_TRAEFIK_DOCKER_SWARMMODE: 'false'
       env_TRAEFIK_DOCKER_SKIP_VERIFY: 'false'
-      env_TRAEFIK_ACME_DNS_RESOLVERS: '1.1.1.1,8.8.8.8'
+      env_TRAEFIK_ACME_DNS_RESOLVERS: '1.1.1.1:53,8.8.8.8:53'
+      env_TRAEFIK_ACME_DISABLE_PROPAGATION_CHECK: false
 environments:
   production:
   development:

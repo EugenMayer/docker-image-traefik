@@ -97,6 +97,7 @@ end
     <%- if dns_resolvers != "" -%>
     resolvers = <%= dns_resolvers %>
     <%- end -%>
+    disablePropagationCheck = <%= env_TRAEFIK_ACME_DISABLE_PROPAGATION_CHECK %>
   <%- end -%>
 <%- end -%>
 #########################  /acme/ #########################
