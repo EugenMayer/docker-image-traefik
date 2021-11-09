@@ -1,22 +1,22 @@
 # that is just a test-setup for development of the image and different tests - change it for your needs
-version: "2"
+version: '2'
 
 services:
   traefik:
-    image: eugenmayer/traefik:2.x
+    image: ghcr.io/eugenmayer/traefik:2.x
     container_name: traefik
     environment:
       ####  those are the mandatory ACME variables
       TRAEFIK_ACME_ENABLE: 'true'
       TRAEFIK_ACME_CHALLENGE: 'dns'
       # see README.md
-      TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER: "${TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER}"
-      TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: "${TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS}"
+      TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER: '${TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER}'
+      TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: '${TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS}'
 
       ###  below are test server adjustments
       # use the ACME staging server
-      TRAEFIK_ACME_CASERVER: "https://acme-staging-v02.api.letsencrypt.org/directory"
-      TRAEFIK_DOCKER_DEFAULT_RULE: "Host(`{{ normalize .Name }}.${YOUR_BASE_DOMAIN}`)"
+      TRAEFIK_ACME_CASERVER: 'https://acme-staging-v02.api.letsencrypt.org/directory'
+      TRAEFIK_DOCKER_DEFAULT_RULE: 'Host(`{{ normalize .Name }}.${YOUR_BASE_DOMAIN}`)'
 
       ### basic provider setup
       TRAEFIK_HTTPS_ENABLE: 'only'
@@ -36,25 +36,25 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       traefik.enable: false
-#
+  #
   web1: # upstream/frontend 1: https://web1-docker-image-traefik.${YOUR_BASE_DOMAIN}
     image: containous/whoami
     labels:
-      traefik.http.routers.web1.tls: "true"
-      traefik.http.routers.web1.tls.certresolver: "default"
+      traefik.http.routers.web1.tls: 'true'
+      traefik.http.routers.web1.tls.certresolver: 'default'
 
   web2: # upstream/frontend 2: http://web2-docker-image-traefik.${YOUR_BASE_DOMAIN}
     image: containous/whoami
     labels:
-      traefik.http.routers.web2.tls: "true"
-      traefik.http.routers.web2.tls.certresolver: "default"
+      traefik.http.routers.web2.tls: 'true'
+      traefik.http.routers.web2.tls.certresolver: 'default'
 
   web3: # upstream/frontend 3: http://foo.bar.lan
     image: containous/whoami
     labels:
-      traefik.http.routers.web3.rule: "Host(`foo.${YOUR_BASE_DOMAIN}`)"
-      traefik.http.routers.web3.tls: "true"
-      traefik.http.routers.web3.tls.certresolver: "default"
+      traefik.http.routers.web3.rule: 'Host(`foo.${YOUR_BASE_DOMAIN}`)'
+      traefik.http.routers.web3.tls: 'true'
+      traefik.http.routers.web3.tls.certresolver: 'default'
 volumes:
   acme:
     driver: local

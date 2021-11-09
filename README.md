@@ -143,6 +143,7 @@ The name of the resolve will be `default` - so this is what you will need to set
 - TRAEFIK_ACME_CHALLENGE_DNS_DELAY="" # Set traefik acme dns challenge delayBeforeCheck. [acme dns challenge](https://docs.traefik.io/configuration/acme/#acmednschallenge)
 - TRAEFIK_ACME_EMAIL="test@traefik.io" # Default email
 - TRAEFIK_ACME_CASERVER="https://acme-v02.api.letsencrypt.org/directory" # ACME caServer parameter
+- TRAEFIK_ACME_DNS_RESOLVERS="1.1.1.1:53,8.8.8.8:53" # add custom DNS servers for resolving DNS SOA request
 
 #### Provider: File backend
 

@@ -4,6 +4,12 @@ trusted_ips=[]
 if env_TRAEFIK_TRUSTEDIPS != ""
   trusted_ips= env_TRAEFIK_TRUSTEDIPS.split(',').to_s
 end
+
+dns_resolvers=""
+if env_TRAEFIK_ACME_DNS_RESOLVERS != ""
+  dns_resolvers= env_TRAEFIK_ACME_DNS_RESOLVERS.split(',').to_s
+end
+
 -%>
 [global]
   sendAnonymousUsage = <%= env_TRAEFIK_USAGE_ENABLE %>
@@ -88,6 +94,9 @@ end
   [certificatesResolvers.default.acme.dnsChallenge]
     provider = "<%= env_TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER %>"
     delayBeforeCheck = <%= env_TRAEFIK_ACME_CHALLENGE_DNS_DELAY %>
+    <%- if dns_resolvers != "" -%>
+    resolvers = <%= dns_resolvers %>
+    <%- end -%>
   <%- end -%>
 <%- end -%>
 #########################  /acme/ #########################

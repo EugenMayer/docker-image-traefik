@@ -1,9 +1,9 @@
 # that is just a test-setup for development of the image and different tests - change it for your needs
-version: "2"
+version: '2'
 
 services:
   traefik:
-    image: eugenmayer/traefik:2.x
+    image: ghcr.io/eugenmayer/traefik:2.x
     environment:
       TRAEFIK_DOCKER_ENABLE: 'true'
       TRAEFIK_ADMIN_ENABLE: 'true'
@@ -32,7 +32,7 @@ services:
   web3: # upstream/frontend 3: http://foo.bar.lan
     image: eugenmayer/whoami:single
     labels:
-      traefik.http.routers.web3.rule: "Host(`foo.bar.lan`)"
+      traefik.http.routers.web3.rule: 'Host(`foo.bar.lan`)'
 
 volumes:
   acme:
