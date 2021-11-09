@@ -9,11 +9,19 @@ services:
       TRAEFIK_ADMIN_ENABLE: 'true'
       TRAEFIK_ADMIN_SSL: 'true'
       TRAEFIK_LOG_LEVEL: 'info'
+      TRAEFIK_ACME_CHALLENGE: 'dns'
+      TRAEFIK_HTTPS_ENABLE: 'only'
+      # see README.md
+      TRAEFIK_ACME_ENABLE: 'true'
+      TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER: 'cloudflare'
+      TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: 'CF_DNS_API_TOKEN=<token>'
       TRAEFIK_DOCKER_DEFAULT_RULE: 'Host(`{{ normalize .Name }}.docker.lan`)'
       TRAEFIK_ADMIN_DOMAIN: ${TRAEFIK_ADMIN_DOMAIN}
+      TRAEFIK_ACME_DNS_RESOLVERS: '1.1.1.1:53,8.8.8.8:53'
+      TRAEFIK_ACME_CASERVER: 'https://acme-staging-v02.api.letsencrypt.org/directory'
     ports:
-      - 80:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
-      - 443:8443 # admin backend under https://localhost/dashboard
+      - 10080:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
+      - 10443:8443 # admin backend under https://localhost/dashboard
     volumes:
       - certs:/mnt/certs
       - filestorage:/mnt/filestorage

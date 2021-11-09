@@ -1,0 +1,54 @@
+<%-
+adminUsers=[]
+middlewaresHttp=[]
+middlewaresHttps=[]
+
+if env_TRAEFIK_ADMIN_AUTH_USERS != ""
+  adminUsers=env_TRAEFIK_ADMIN_AUTH_USERS.split('\n').to_s
+  middlewaresHttp.push('"dashboard-auth"')
+  middlewaresHttps.push('"dashboard-auth"')
+end
+
+if env_TRAEFIK_ADMIN_SSL == "true"
+  middlewaresHttp.push('"dashboard-ssl-redirect"')
+end
+
+dashboardRule = "PathPrefix(`/dashboard/`) || PathPrefix(`/api`)"
+if env_TRAEFIK_ADMIN_DOMAIN != "" && env_TRAEFIK_ADMIN_DOMAIN != nil
+  dashboardRule = "Host (`#{env_TRAEFIK_ADMIN_DOMAIN}`)"
+end
+-%>
+
+<%- if env_TRAEFIK_ADMIN_ENABLE == "true" -%>
+[http.routers]
+<%- if env_TRAEFIK_ADMIN_SSL == "true" -%>
+  [http.routers.my-api-https]
+    entryPoints = ["https"]
+    rule = "<%=dashboardRule %>"
+    service = "api@internal"
+    middlewares = [<%= middlewaresHttps.join(",") %>]
+    [http.routers.my-api-https.tls]
+      options = "dashboard"
+<% end -%>
+
+  [http.routers.my-api-http]
+    entryPoints = ["http"]
+    rule = "<%=dashboardRule %>"
+    service = "api@internal"
+    middlewares = [<%= middlewaresHttp.join(",") %>]
+
+[http.middlewares]
+  [http.middlewares.dashboard-ssl-redirect.redirectScheme]
+    scheme = "https"
+
+  <%- if adminUsers.length > 0 -%>
+  [http.middlewares.dashboard-auth]
+    [http.middlewares.dashboard-auth.basicAuth]
+      users = <%= adminUsers %>
+  <%- end -%>
+
+[tls]
+  [tls.options]
+    [tls.options.dashboard]
+      minVersion = "VersionTLS12"
+<% end -%>

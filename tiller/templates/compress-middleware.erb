@@ -1,0 +1,9 @@
+<% if %w(true only).include?(env_TRAEFIK_HTTP_COMPRESSION) -%>
+[http.middlewares]
+  [http.middlewares.compress.compress]
+<%- end -%>
+
+<% if %w(true only).include?(env_TRAEFIK_HTTPS_COMPRESSION) -%>
+[https.middlewares]
+  [https.middlewares.compress.compress]
+<%- end -%>

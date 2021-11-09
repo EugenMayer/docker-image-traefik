@@ -1,85 +1,101 @@
 ---
-data_sources: [ "defaults", "file" , "environment" ]
+data_sources: ['defaults', 'file', 'environment']
 
 environment:
   lowercase: false
 
-template_sources: [ "file" ]
+template_sources: ['file']
 
 defaults:
+  tls-configuration.erb:
+    target: /mnt/filestorage/generated-tls-configuration.toml
+    config:
+      env_TRAEFIK_HTTPS_ENABLE: 'false'
+      env_TRAEFIK_SSL_KEY_FILE: '/mnt/certs/ssl.key'
+      env_TRAEFIK_SSL_CERT_FILE: '/mnt/certs/ssl.crt'
+      env_TRAEFIK_HTTPS_MIN_TLS: 'VersionTLS12'
+  https-redirect-router.erb:
+    target: /mnt/filestorage/generated-https-redirect-router.toml
+    config:
+      env_TRAEFIK_HTTPS_ENABLE: 'false'
+  compress-middleware.erb:
+    target: /mnt/filestorage/generated-compress-middleware.toml
+    config:
+      env_TRAEFIK_HTTP_COMPRESSION: 'true'
+      env_TRAEFIK_HTTPS_COMPRESSION: 'true'
+  default-dashboard.erb:
+    target: /mnt/filestorage/generated-dashboard.toml
+    config:
+      env_TRAEFIK_ADMIN_ENABLE: 'false'
+      env_TRAEFIK_ADMIN_SSL: 'true'
+      env_TRAEFIK_ADMIN_AUTH_METHOD: 'basic'
+      env_TRAEFIK_ADMIN_AUTH_USERS: ''
   acme-credentials.erb:
     target: /etc/traefik/acme_credentials
     config:
-      env_TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: ""
+      env_TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: ''
   traefik.toml.erb:
     target: /etc/traefik/traefik.toml
     config:
-      env_TRAEFIK_DEBUG: "false"
-      env_TRAEFIK_INSECURE_SKIP: "false"
-      env_TRAEFIK_TIMEOUT_READ: "0"
-      env_TRAEFIK_TIMEOUT_WRITE: "0"
-      env_TRAEFIK_TIMEOUT_IDLE: "180"
-      env_TRAEFIK_TIMEOUT_DIAL: "30"
-      env_TRAEFIK_TIMEOUT_HEADER: "0"
-      env_TRAEFIK_USAGE_ENABLE: "false"
-      env_TRAEFIK_LOG_LEVEL: "info"
-      env_TRAEFIK_LOG_FILE: "/var/log/traefik.log"
-      env_TRAEFIK_ACCESS_FILE: "/var/log/traefik.access.log"
-      env_TRAEFIK_RANCHER_CONSTRAINTS: ""
-      env_TRAEFIK_HTTP_PORT: "8080"
-      env_TRAEFIK_HTTP_COMPRESSION: "true"
-      env_TRAEFIK_TRUSTEDIPS: ""
-      env_TRAEFIK_HTTPS_ENABLE: "false"
-      env_TRAEFIK_HTTPS_COMPRESSION: "true"
-      env_TRAEFIK_HTTPS_PORT: "8443"
-      env_TRAEFIK_HTTPS_MIN_TLS: "VersionTLS12"
-      env_TRAEFIK_ACME_ENABLE: "false"
-      env_TRAEFIK_ACME_STORAGE: "/mnt/acme/acme.json"
-      env_TRAEFIK_ACME_CHALLENGE: ""
-      env_TRAEFIK_ACME_CHALLENGE_HTTP_ENTRYPOINT: "http"
-      env_TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER: ""
+      env_TRAEFIK_DEBUG: 'false'
+      env_TRAEFIK_INSECURE_SKIP: 'false'
+      env_TRAEFIK_TIMEOUT_READ: '0'
+      env_TRAEFIK_TIMEOUT_WRITE: '0'
+      env_TRAEFIK_TIMEOUT_IDLE: '180'
+      env_TRAEFIK_TIMEOUT_DIAL: '30'
+      env_TRAEFIK_TIMEOUT_HEADER: '0'
+      env_TRAEFIK_USAGE_ENABLE: 'false'
+      env_TRAEFIK_LOG_LEVEL: 'info'
+      env_TRAEFIK_LOG_FILE: '/var/log/traefik.log'
+      env_TRAEFIK_ACCESS_FILE: '/var/log/traefik.access.log'
+      env_TRAEFIK_RANCHER_CONSTRAINTS: ''
+      env_TRAEFIK_HTTP_PORT: '8080'
+      env_TRAEFIK_HTTP_COMPRESSION: 'true'
+      env_TRAEFIK_HTTPS_COMPRESSION: 'true'
+      env_TRAEFIK_TRUSTEDIPS: ''
+      env_TRAEFIK_HTTPS_ENABLE: 'false'
+      env_TRAEFIK_HTTPS_PORT: '8443'
+      env_TRAEFIK_ACME_ENABLE: 'false'
+      env_TRAEFIK_ACME_STORAGE: '/mnt/acme/acme.json'
+      env_TRAEFIK_ACME_CHALLENGE: ''
+      env_TRAEFIK_ACME_CHALLENGE_HTTP_ENTRYPOINT: 'http'
+      env_TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER: ''
       env_TRAEFIK_ACME_CHALLENGE_DNS_DELAY: 0
-      env_TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: ""
-      env_TRAEFIK_ACME_EMAIL: "test@traefik.io"
-      env_TRAEFIK_ACME_ONHOSTRULE: "true"
-      env_TRAEFIK_ACME_CASERVER: "https://acme-v02.api.letsencrypt.org/directory"
-      env_TRAEFIK_ACME_LOGGIN: "false"
-      env_TRAEFIK_ADMIN_ENABLE: "false"
-      env_TRAEFIK_ADMIN_PORT: "8000"
-      env_TRAEFIK_ADMIN_SSL: "false"
-      env_TRAEFIK_ADMIN_STATISTICS: 10
-      env_TRAEFIK_ADMIN_AUTH_METHOD: "basic"
-      env_TRAEFIK_ADMIN_AUTH_USERS: ""
-      env_TRAEFIK_ADMIN_SSL_KEY_FILE: "/mnt/certs/ssl.key"
-      env_TRAEFIK_ADMIN_SSL_CERT_FILE: "/mnt/certs/ssl.crt"
-      env_TRAEFIK_METRICS_ENABLE: "false"
-      env_TRAEFIK_METRICS_EXPORTER: ""
-      env_TRAEFIK_METRICS_PUSH: "10"
-      env_TRAEFIK_METRICS_ADDRESS: ""
-      env_TRAEFIK_METRICS_PROMETHEUS_BUCKETS: "[0.1,0.3,1.2,5.0]"
-      env_TRAEFIK_RANCHER_ENABLE: "false"
+      env_TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: ''
+      env_TRAEFIK_ACME_EMAIL: 'test@traefik.io'
+      env_TRAEFIK_ACME_CASERVER: 'https://acme-v02.api.letsencrypt.org/directory'
+      env_TRAEFIK_ADMIN_ENABLE: 'false'
+      env_TRAEFIK_ADMIN_SSL: 'true'
+      env_TRAEFIK_METRICS_ENABLE: 'false'
+      env_TRAEFIK_METRICS_EXPORTER: ''
+      env_TRAEFIK_METRICS_PUSH: '10'
+      env_TRAEFIK_METRICS_ADDRESS: ''
+      env_TRAEFIK_METRICS_PROMETHEUS_BUCKETS: '[0.1,0.3,1.2,5.0]'
+      env_TRAEFIK_METRICS_STATISTICS: 10
+      env_TRAEFIK_RANCHER_ENABLE: 'false'
       env_TRAEFIK_RANCHER_REFRESH: 15
-      env_TRAEFIK_RANCHER_MODE: "metadata"
-      env_TRAEFIK_RANCHER_DOMAIN: "rancher.internal"
-      env_TRAEFIK_RANCHER_EXPOSED: "false"
-      env_TRAEFIK_RANCHER_HEALTHCHECK: "false"
-      env_TRAEFIK_RANCHER_INTERVALPOLL: "false"
-      env_TRAEFIK_RANCHER_OPTS: ""
-      env_TRAEFIK_RANCHER_PREFIX: "/2016-07-29"
-      env_TRAEFIK_RANCHER_CATTLE_URL: ""
-      env_TRAEFIK_RANCHER_CATTLE_ACCESS_KEY: ""
-      env_TRAEFIK_RANCHER_CATTLE_SECRET_KEY: ""
-      env_TRAEFIK_K8S_ENABLE: "false"
-      env_TRAEFIK_K8S_OPTS: ""
-      env_TRAEFIK_FILE_FOLDER: "/mnt/filestorage"
-      env_TRAEFIK_FILE_ENABLE: "false"
-      env_TRAEFIK_FILE_OPTS: ""
-      env_TRAEFIK_DOCKER_ENABLE: "false"
-      env_TRAEFIK_DOCKER_ENDPOINT: "unix:///var/run/docker.sock"
-      env_TRAEFIK_DOCKER_DOMAIN: "docker.localhost"
-      env_TRAEFIK_DOCKER_EXPOSEDBYDEFAULT: "true"
-      env_TRAEFIK_DOCKER_SWARMMODE: "false"
-      env_TRAEFIK_DOCKER_SKIP_VERIFY: "false"
+      env_TRAEFIK_RANCHER_MODE: 'metadata'
+      env_TRAEFIK_RANCHER_DEFAULT_RULE: 'Host(`{{ normalize .Name }}`)'
+      env_TRAEFIK_RANCHER_EXPOSED: 'false'
+      env_TRAEFIK_RANCHER_HEALTHCHECK: 'false'
+      env_TRAEFIK_RANCHER_INTERVALPOLL: 'false'
+      env_TRAEFIK_RANCHER_OPTS: ''
+      env_TRAEFIK_RANCHER_PREFIX: '/latest'
+      env_TRAEFIK_RANCHER_CATTLE_URL: ''
+      env_TRAEFIK_RANCHER_CATTLE_ACCESS_KEY: ''
+      env_TRAEFIK_RANCHER_CATTLE_SECRET_KEY: ''
+      env_TRAEFIK_K8S_ENABLE: 'false'
+      env_TRAEFIK_K8S_OPTS: ''
+      env_TRAEFIK_FILE_FOLDER: '/mnt/filestorage'
+      env_TRAEFIK_FILE_ENABLE: 'false'
+      env_TRAEFIK_FILE_OPTS: ''
+      env_TRAEFIK_DOCKER_ENABLE: 'false'
+      env_TRAEFIK_DOCKER_ENDPOINT: 'unix:///var/run/docker.sock'
+      env_TRAEFIK_DOCKER_DEFAULT_RULE: 'Host(`{{ normalize .Name }}`)'
+      env_TRAEFIK_DOCKER_EXPOSEDBYDEFAULT: 'true'
+      env_TRAEFIK_DOCKER_SWARMMODE: 'false'
+      env_TRAEFIK_DOCKER_SKIP_VERIFY: 'false'
+      env_TRAEFIK_ACME_DNS_RESOLVERS: ''
 environments:
   production:
   development:

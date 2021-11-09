@@ -1,24 +1,45 @@
-[![](https://images.microbadger.com/badges/image/eugenmayer/traefik.svg)](https://microbadger.com/images/eugenmayer/traefik)
-
-**Hint**: For traefik 2.0 see the feature/2.0 branch and the :2.0 tag
+**HINT: This branch is for Traefik 2.x**
 
 ## WAT
 
-Implements a ENV-Var based configuratoin for your Traefik server running as a docker-image.
+- Implements a ENV-Var based configuration for your Traefik server running as a docker-image.
+- Easier to configure then classic Treafik 2.0 due to high-level settings like "enable dashboard" or "always redirect"
+- rancher (1.x) supported
+
+The amd64 image is published on
+
+- `ghcr.io/eugenmayer/traefik:2.x` [github packages](https://github.com/EugenMayer/docker-image-traefik/pkgs/container/traefik)
+- `eugenmayer/traefik:2.x` [hub.docker.com](https://hub.docker.com/r/eugenmayer/traefik) [deprecated]
+
+### WAT: Detailed
+
+Starting with Traefik v2 the configuration using the ENV vars here can be considerably easier, since let high level features like "enabled dashboard" or "redirect all to https" can be setup using one ENV vars, being fairly complexing in the original configuration thouugh.
+
+The configuration here is rather macro driven, high level. So if you set `TRAEFIK_HTTPS_ENABLE=only` you will get the redirect configured automatically.
+`TRAEFIK_HTTPS_ENABLE=true` will configure a TLS endoint and so on. Similar storry for enable the API backend / Dashboard - just do `TRAEFIK_ADMIN_ENABLE=true`
+
+### WAT: Official image
+
 It bases on top of the official stable release of [Traefik](https://hub.docker.com/_/traefik/) and just adds a bootstrap to generate the `traefik.toml` file from your ENV variables you pass to the container.
+
+### WAT: Rancher
 
 If you happen to use rancher, you find the corresponding catalog in see the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik)
 
-Image is publish on
-
-- `ghcr.io/eugenmayer/traefik:1.7` [github packages](https://github.com/EugenMayer/docker-image-traefik/pkgs/container/traefik)
-- `eugenmayer/traefik:1.7` [hub.docker.com](https://hub.docker.com/r/eugenmayer/traefik) [deprecated]
-
 ## WAT its not
 
-Even though this image will make it a lot easier bootstrapping and running your traefik server in production with various providers, this is not a beginners-boilerplate.
-That said, all your traefik questions go the Forum/Slack and before that, read the [Traefik Documentation](https://docs.traefik.io/). I will not answer "how to do this in Traefik" questions in the issue queue.
+Even though this image will make it a lot easier bootstrapping and running your Traefik server in production with various providers, this is not a beginners-boilerplate.
+That said, all your Traefik questions should go to the forum and before that, read the [Traefik Documentation](https://docs.traefik.io/) i suppose. I will not consider answering "how to do this in Traefik" questions in the issue queue.
 Thanks!
+
+## Migration to 2.0
+
+1. rename `TRAEFIK_DOCKER_DOMAIN` to `TRAEFIK_DOCKER_DEFAULT_RULE` and use the new syntax https://docs.traefik.io/providers/docker/#defaultrule
+2. rename `TRAEFIK_RANCHER_DOMAIN` to `env_TRAEFIK_RANCHER_DEFAULT_RULE` and use the syntax from https://docs.traefik.io/providers/rancher/#defaultrule
+3. optionally (but strongly encouraged ) add `TRAEFIK_ADMIN_DOMAIN` env variable and set it to the domain you want to use for your dashboard like `traefik.company.tld` - you can access the dasboard undert `https://traefik.company.tld/dashboard/` then ( trailing slash is mandatory )
+4. Be sure to migrate all your old `.toml` files for `frontends/backends` to the new `routers/services` syntax, see [this reference](https://docs.traefik.io/reference/dynamic-configuration/file/)
+
+Hint: If you do not set `TRAEFIK_ADMIN_DOMAIN`, on every router the path `/dashboard/` and `/api/` will be matched to the dashboard .. crazy.
 
 **kubernetes**
 
@@ -37,7 +58,7 @@ docker run -e TRAEFIK_DOCKER_ENABLE=true eugenamyer/traefik
 ```
 
 ```yaml
-version: '2'
+version: '3'
 
 services:
   traefik:
@@ -97,35 +118,36 @@ Use this as a starting point / what you can do with this configuration, read the
 - TRAEFIK_HTTPS_MIN_TLS="VersionTLS12" # Minimal allowed tls version to accept connections from
 - TRAEFIK_HTTPS_COMPRESSION="true" # Enable https compression
 
-#### Endpoint Admin
+#### Admin / Dashboard / API
 
-- TRAEFIK_ADMIN_ENABLE="false" # "true" enables api, rest, ping and webui
-- TRAEFIK_ADMIN_PORT=8000 # admin port > 1024 due to run as non privileged user
-- TRAEFIK_ADMIN_SSL=false # "true" enables https on api, rest, ping and webui using `TRAEFIK_SSL_CRT` certificate
+Your admin dashboard will be accessible on either the `http` or the `https` enpoint, so `http(s)://localhosts/dashboard/`
+
+- TRAEFIK_ADMIN_ENABLE="false" # "true" enables api, rest, ping and dashboard
+- TRAEFIK_ADMIN_DOMAIN="traefik.company.tld # If you do not set `TRAEFIK_ADMIN_DOMAIN`, on every router the path `/dashboard/` and `/api/` will be matched to the dashboard .. crazy.
+- TRAEFIK_ADMIN_SSL=true # "true" enables https on `/dashboard/`, so `https://localhosts/dashboard/`
 - TRAEFIK_ADMIN_SSL_KEY_FILE="/mnt/certs/ssl.key" # Default admin backend key file - cert will be auto-generated. Use /mnt/certs/custom.key and put it on the volume to have your own
 - TRAEFIK_ADMIN_SSL_CRT_FILE="/mnt/certs/ssl.cert" # Default admin backend crt file - cert will be auto-generated. Use /mnt/certs/custom.cert and put it on the volume to have your own
-- TRAEFIK_ADMIN_STATISTICS=10 # Enable more detailed statistics
 - TRAEFIK_ADMIN_AUTH_METHOD="basic" # Auth method to use on api, rest, ping and webui. basic | digest
 - TRAEFIK_ADMIN_AUTH_USERS="" # Basic or digest users created with htpasswd or htdigest.
 
 #### ACME
 
 For configuring your endpoints with SSL Certificates, ACME is one of the power features of [Traefik](https://traefik.io)
+The name of the resolve will be `default` - so this is what you will need to set your router to using `routers.myroouter.tls.certresolver: default`
 
-- TRAEFIK_ACME_ENABLE="false" # Enable/disable traefik ACME feature. [acme](https://docs.traefik.io/configuration/acme/)
+- TRAEFIK_ACME_ENABLE="false" # Enable/disable traefik ACME feature. [acme](https://docs.traefik.io/configuration/acme/) - the resolver will be named `default`
 - TRAEFIK_ACME_CHALLENGE="http" # Set http | dns to activate traefik acme challenge mode.
 - TRAEFIK_ACME_CHALLENGE_HTTP_ENTRYPOINT="http" # Set traefik acme http challenge entrypoint. [acme http challenge](https://docs.traefik.io/configuration/acme/#acmehttpchallenge)
 - TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER="" # Set traefik acme dns challenge provider. You need to manually add configuration env variables accordingly the dns provider you use. [acme dns provider](https://docs.traefik.io/configuration/acme/#provider)
-- TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS="" # Set you credentials needed for your DNS provider. Use a `key1=value1;key2=value2` syntax, e.g. for Cloudflare `CF_API_EMAIL=aasdas@gmx.de;CF_API_KEY=adqweq121` - see [the traefik documentation](https://docs.traefik.io/configuration/acme/#provider) for the avaiable keys
+- TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS="" # Set you credentials needed for your DNS provider. Use a `key1=value1;key2=value2` syntax, e.g. for Cloudflare `CF_API_EMAIL=aasdas@gmx.de;CF_API_KEY=adqweq121` or `CF_DNS_API_TOKEN=<token>` - see [the traefik documentation](https://docs.traefik.io/configuration/acme/#provider) for the avaiable keys
 - TRAEFIK_ACME_CHALLENGE_DNS_DELAY="" # Set traefik acme dns challenge delayBeforeCheck. [acme dns challenge](https://docs.traefik.io/configuration/acme/#acmednschallenge)
 - TRAEFIK_ACME_EMAIL="test@traefik.io" # Default email
-- TRAEFIK_ACME_ONHOSTRULE="true" # ACME OnHostRule parameter
 - TRAEFIK_ACME_CASERVER="https://acme-v02.api.letsencrypt.org/directory" # ACME caServer parameter
-- TRAEFIK_ACME_LOGGING="false" # enable debug logging for ACME operations. Useful if you look for ACME issues
+- TRAEFIK_ACME_DNS_RESOLVERS="1.1.1.1:53,8.8.8.8:53" # add custom DNS servers for resolving DNS SOA request
 
 #### Provider: File backend
 
-- TRAEFIK_FILE_ENABLE="false" # Enable/disable file backend
+- TRAEFIK_FILE_ENABLE="false" # Enable/disable file backend - this is mostly enabled anyway to offer https redirects, dashboard on such features
 - TRAEFIK_FILE_FOLDER="/mnt/filestorage" # where your custom rules will be located. Keep that path its a volume, create `/mnt/filestorage/frontend1.toml` .. `/mnt/filestorage/frontend2.toml` for reach of your frontend/backend combinations inside that folder. Its watched automatically
 
 #### Provider: Kubernetes
@@ -137,29 +159,26 @@ For configuring your endpoints with SSL Certificates, ACME is one of the power f
 
 - TRAEFIK_RANCHER_ENABLE="false" # Enable/disable traefik RANCHER integration
 - TRAEFIK_RANCHER_REFRESH=15 # Rancher poll refresh seconds
-- TRAEFIK_RANCHER_MODE="api" # Rancher integration mode. api | metadata
-- TRAEFIK_RANCHER_DOMAIN="rancher.internal" # Rancher domain
+- TRAEFIK_RANCHER_DEFAUL_RULE="Host(`{{ normalize .Name }}`)" # Rancher domain
 - TRAEFIK_RANCHER_EXPOSED="false" # Rancher ExposedByDefault
 - TRAEFIK_RANCHER_HEALTHCHECK="false" # Rancher EnableServiceHealthFilter
 - TRAEFIK_RANCHER_INTERVALPOLL="false" # Rancher enable/disable intervalpoll
-- TRAEFIK_RANCHER_PREFIX="/2016-07-29" # Rancher metadata prefix
-- TRAEFIK_RANCHER_CATTLE_URL="" # Rancher API url
-- TRAEFIK_RANCHER_CATTLE_ACCESS_KEY="" # Rancher access key
-- TRAEFIK_RANCHER_CATTLE_SECRET_KEY="" # Rancher secret key
+- TRAEFIK_RANCHER_PREFIX="/latest" # Rancher metadata prefix
 - TRAEFIK_CONSTRAINTS="" # Traefik constraint param. EG: \\"tag==api\\" - see https://docs.traefik.io/configuration/commons/#constraints
 
 #### Provider: Docker
 
-- TRAEFIK_DOCKER_ENABLE="false" # use true to enable the [docker provder](https://docs.traefik.io/configuration/backends/docker/)
+- TRAEFIK_DOCKER_ENABLE="false" # use true to enable the [docker provider](https://docs.traefik.io/configuration/backends/docker/)
 - TRAEFIK_DOCKER_ENDPOINT="unix:///var/run/docker.sock" # how to access your docker engine - mount this socket or define a `tcp://` based connection
-- TRAEFIK_DOCKER_DOMAIN="docker.localhost" # the default domain to generate frontends for
-- TRAEFIK_DOCKER_EXPOSEDBYDEFAULT="true" # should all docker-containers in the engine be parsed by their exposed ports
+- TRAEFIK_DOCKER_DEFAULT_RULE="Host(`{{ normalize .Name }}`)" # the default domain to generate frontends for
+- TRAEFIK_DOCKER_EXPOSEDBYDEFAULT="true" # should all docker-containers in the engine be parsed by their exposed ports [see docs](https://doc.traefik.io/traefik/providers/docker/#exposedbydefault)
 - TRAEFIK_DOCKER_SWARMMODE="false" # use `tcp://` for accessing a swarm cluster. If you set this, put your TLS creds under `/mnt/certs/docker.ca.crt, /mnt/certs/docker.crt, /mnt/certs/docker.ca.key`
 - TRAEFIK_DOCKER_SKIP_VERIFY="false" # when set, the connection to the upstream swarm cluster is not verified ( TLS )
 - TRAEFIK_CONSTRAINTS="" # Traefik constraint param. EG: \\"tag==api\\" - see https://docs.traefik.io/configuration/commons/#constraints
 
 #### Metrics
 
+- TRAEFIK_METRICS_STATISTICS=10 # Enable more detailed statistics
 - TRAEFIK_METRICS_ENABLE="false" # Enable/disable traefik [metrics](https://docs.traefik.io/configuration/metrics/)
 - TRAEFIK_METRICS_EXPORTER="" # Metrics exporter prometheus | datadog | statsd | influxdb
 - TRAEFIK_METRICS_PUSH="10" # Metrics exporter push interval (s). datadog | statsd | influxdb
@@ -181,12 +200,12 @@ wget http://web2.docker-image-traefik.docker.lan
 
 Please set your `TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER` and `TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS` in `.env` and then run
 
-You `.env` file should like like this, for other provider see the [documentation](https://docs.traefik.io/configuration/acme/#provider)
+You `.env` file should like like this, for other provider see the [documentation](https://docs.traefik.io/https/acme/#providers)
 
 ```dotenv
 YOUR_DOMAIN=company.com
 TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER=cloudflare
-TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS=CLOUDFLARE_EMAIL=aasdas@gmx.de;CLOUDFLARE_API_KEY=adqweq121
+TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS=CLOUDFLARE_EMAIL=aasdas@gmx.de;CLOUDFLARE_DNS_API_TOKEN=token123
 ```
 
 Then start the stack and wait for about 3 minutes for all certificates to get installed
@@ -195,8 +214,8 @@ Then start the stack and wait for about 3 minutes for all certificates to get in
 docker-compose -f docker-compose-acme-dns.yml up
 
 
-wget https://web1.docker-image-traefik.company.com
-wget https://web2.docker-image-traefik.company.com
+wget https://web1-docker-image-traefik.company.com
+wget https://web2-docker-image-traefik.company.com
 wget https://foo.company.com
 ```
 
