@@ -1,0 +1,51 @@
+# that is just a test-setup for development of the image and different tests - change it for your needs
+version: '2'
+
+services:
+  traefik:
+    image: ghcr.io/eugenmayer/traefik:2.x
+    environment:
+      TRAEFIK_DOCKER_ENABLE: 'true'
+      TRAEFIK_ADMIN_ENABLE: 'true'
+      TRAEFIK_ADMIN_SSL: 'true'
+      TRAEFIK_LOG_LEVEL: 'info'
+      TRAEFIK_ACME_CHALLENGE: 'dns'
+      TRAEFIK_HTTPS_ENABLE: 'only'
+      # see README.md
+      TRAEFIK_ACME_ENABLE: 'true'
+      TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER: 'cloudflare'
+      TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS: 'CF_DNS_API_TOKEN=<token>'
+      TRAEFIK_DOCKER_DEFAULT_RULE: 'Host(`{{ normalize .Name }}.docker.lan`)'
+      TRAEFIK_ADMIN_DOMAIN: ${TRAEFIK_ADMIN_DOMAIN}
+      TRAEFIK_ACME_DNS_RESOLVERS: '1.1.1.1:53,8.8.8.8:53'
+      TRAEFIK_ACME_CASERVER: 'https://acme-staging-v02.api.letsencrypt.org/directory'
+    ports:
+      - 10080:8080 # access your lb here, so http://web1.docker-image-traefik.docker.lan
+      - 10443:8443 # admin backend under https://localhost/dashboard
+    volumes:
+      - certs:/mnt/certs
+      - filestorage:/mnt/filestorage
+      - acme:/mnt/acme
+      # mount our docker socket so our docker container can be discovered
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      traefik.enable: false
+
+  web1: # upstream/frontend 1: http://web1-docker-image-traefik.docker.lan/
+    image: eugenmayer/whoami:single
+
+  web2: # upstream/frontend 2: http://web1-docker-image-traefik.docker.lan/
+    image: eugenmayer/whoami:single
+
+  web3: # upstream/frontend 3: http://foo.bar.lan
+    image: eugenmayer/whoami:single
+    labels:
+      traefik.http.routers.web3.rule: 'Host(`foo.bar.lan`)'
+
+volumes:
+  acme:
+    driver: local
+  certs:
+    driver: local
+  filestorage:
+    driver: local
