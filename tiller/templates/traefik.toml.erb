@@ -21,7 +21,7 @@ end
 
 [accessLog]
   filePath = "<%= env_TRAEFIK_ACCESS_FILE %>"
-  bufferingSize = "<%= env_TRAEFIK_ACCESS_BUFFERING_SIZE %>"
+  bufferingSize = <%= env_TRAEFIK_ACCESS_BUFFERING_SIZE %>
 
 [serversTransport]
   insecureSkipVerify = <%= env_TRAEFIK_INSECURE_SKIP %>
