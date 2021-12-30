@@ -93,7 +93,7 @@ make build
 Those are the avaiable env vars and their default. This should **not replace** the official [Traefik Documentation](https://docs.traefik.io/).
 Use this as a starting point / what you can do with this configuration, read the docs in any way.
 
-- TRAEFIK_LOG_LEVEL="INFO" # Log level
+- TRAEFIK_LOG_LEVEL="INFO" # Log level - see https://doc.traefik.io/traefik/observability/logs/#level
 - TRAEFIK_DEBUG="false" # Enable/disable debug mode
 - TRAEFIK_INSECURE_SKIP="false" # Enable/disable InsecureSkipVerify parameter
 - TRAEFIK_LOG_FILE="/var/log/traefik.log"} # Log file. Redirected to docker stdout.
