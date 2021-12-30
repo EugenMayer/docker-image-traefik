@@ -96,8 +96,9 @@ Use this as a starting point / what you can do with this configuration, read the
 - TRAEFIK_LOG_LEVEL="INFO" # Log level - see https://doc.traefik.io/traefik/observability/logs/#level
 - TRAEFIK_DEBUG="false" # Enable/disable debug mode
 - TRAEFIK_INSECURE_SKIP="false" # Enable/disable InsecureSkipVerify parameter
-- TRAEFIK_LOG_FILE="/var/log/traefik.log"} # Log file. Redirected to docker stdout.
-- TRAEFIK_ACCESS_FILE="/var/log/access.log"} # Access file. Redirected to docker stdout.
+- TRAEFIK_LOG_FILE="/var/log/traefik.log" # Log file. Redirected to docker stdout.
+- TRAEFIK_ACCESS_FILE="/var/log/access.log" # Access file. Redirected to docker stdout.
+- TRAEFIK_ACCESS_BUFFERING_SIZE=100 # 250 is default. How many log lines to buffer before writing them, can improve performance, see https://doc.traefik.io/traefik/observability/access-logs/#bufferingsize
 - TRAEFIK_TRUSTEDIPS="" # Enable [proxyProtocol](https://docs.traefik.io/configuration/entrypoints/#proxyprotocol) and [forwardHeaders](https://docs.traefik.io/configuration/entrypoints/#forwarded-header) for these IPs (eg: "172.0.0.0/16,192.168.0.1")
 - TRAEFIK_USAGE_ENABLE="false" # Enable/disable send Traefik [anonymous usage collection](https://docs.traefik.io/basics/#collected-data)
 - TRAEFIK_TIMEOUT_READ="0" # respondingTimeouts [readTimeout](https://docs.traefik.io/configuration/commons/#responding-timeouts)
