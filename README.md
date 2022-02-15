@@ -3,9 +3,8 @@
 ## WAT
 
 - Implements a ENV-Var based configuration for your Traefik server running as a docker-image.
-- Easier to configure then classic Treafik 2.0 due to high-level settings like "enable dashboard" or "always redirect"
-- rancher (1.x) supported
-
+- Easier to configure then classic Treafik 2.x due to high-level settings like "enable dashboard" or "always redirect"
+- 
 The amd64 image is published on
 
 - `ghcr.io/eugenmayer/traefik:2.x` [github packages](https://github.com/EugenMayer/docker-image-traefik/pkgs/container/traefik)
@@ -149,17 +148,6 @@ The name of the resolve will be `default` - so this is what you will need to set
 - TRAEFIK_K8S_ENABLE="false" # Enable/disable traefik K8S integration
 - TRAEFIK_CONSTRAINTS="" # Traefik constraint param. EG: \\"tag==api\\" - see https://docs.traefik.io/configuration/commons/#constraints
 
-#### Provider: Rancher
-
-- TRAEFIK_RANCHER_ENABLE="false" # Enable/disable traefik RANCHER integration
-- TRAEFIK_RANCHER_REFRESH=15 # Rancher poll refresh seconds
-- TRAEFIK_RANCHER_DEFAUL_RULE="Host(`{{ normalize .Name }}`)" # Rancher domain
-- TRAEFIK_RANCHER_EXPOSED="false" # Rancher ExposedByDefault
-- TRAEFIK_RANCHER_HEALTHCHECK="false" # Rancher EnableServiceHealthFilter
-- TRAEFIK_RANCHER_INTERVALPOLL="false" # Rancher enable/disable intervalpoll
-- TRAEFIK_RANCHER_PREFIX="/latest" # Rancher metadata prefix
-- TRAEFIK_CONSTRAINTS="" # Traefik constraint param. EG: \\"tag==api\\" - see https://docs.traefik.io/configuration/commons/#constraints
-
 #### Provider: Docker
 
 - TRAEFIK_DOCKER_ENABLE="false" # use true to enable the [docker provider](https://docs.traefik.io/configuration/backends/docker/)
@@ -212,10 +200,6 @@ wget https://web1-docker-image-traefik.company.com
 wget https://web2-docker-image-traefik.company.com
 wget https://foo.company.com
 ```
-
-## Rancher
-
-See the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik) to run this in rancher. Fully integrated with rancher metadata
 
 ## Contributions / Development
 
