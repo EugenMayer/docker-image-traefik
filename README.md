@@ -22,10 +22,6 @@ The configuration here is rather macro driven, high level. So if you set `TRAEFI
 
 It bases on top of the official stable release of [Traefik](https://hub.docker.com/_/traefik/) and just adds a bootstrap to generate the `traefik.toml` file from your ENV variables you pass to the container.
 
-### WAT: Rancher
-
-If you happen to use rancher, you find the corresponding catalog in see the catalog [eugenmayer/docker-rancher-extra-catalogs](https://github.com/EugenMayer/docker-rancher-extra-catalogs/tree/master/templates/traefik)
-
 ## WAT its not
 
 Even though this image will make it a lot easier bootstrapping and running your Traefik server in production with various providers, this is not a beginners-boilerplate.
@@ -40,10 +36,6 @@ Thanks!
 4. Be sure to migrate all your old `.toml` files for `frontends/backends` to the new `routers/services` syntax, see [this reference](https://docs.traefik.io/reference/dynamic-configuration/file/)
 
 Hint: If you do not set `TRAEFIK_ADMIN_DOMAIN`, on every router the path `/dashboard/` and `/api/` will be matched to the dashboard .. crazy.
-
-**kubernetes**
-
-If you are using k8s you might rather consider using a [configMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/) like [this](https://gist.github.com/joejulian/607f0090230d9aa8701155590c22c3e2) to stick with the canonical way and not using this image
 
 ## Configuration
 
