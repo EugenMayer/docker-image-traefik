@@ -1,7 +1,7 @@
 release: build push
 
 build:
-	docker pull traefik:2.5
+	docker pull traefik:2.6
 	docker build -t ghcr.io/eugenmayer/traefik:2.x .
 
 push: tag-docker-hub tag-github push-github push-hub
