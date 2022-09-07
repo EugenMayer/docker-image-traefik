@@ -1,4 +1,4 @@
-**HINT: This branch is for Traefik 2.x**
+[![build-and-push](https://github.com/EugenMayer/docker-image-traefik/actions/workflows/build.yml/badge.svg)](https://github.com/EugenMayer/docker-image-traefik/actions/workflows/build.yml)
 
 ## WAT
 
