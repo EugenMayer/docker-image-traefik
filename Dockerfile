@@ -1,4 +1,5 @@
-FROM traefik:2.8
+ARG TRAEFIK_VERSION=2.8
+FROM traefik:$TRAEFIK_VERSION
 MAINTAINER Eugen Mayer <eugen.mayer@kontextwork.de>
 LABEL org.opencontainers.image.source https://github.com/eugenmayer/docker-image-traefik
 

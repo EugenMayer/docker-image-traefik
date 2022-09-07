@@ -31,6 +31,6 @@ jobs:
           context: .
           platforms: linux/amd64
           push: true
-          tags: ${{ env.IMAGE_FQDN }}:${{ github.tag }}
+          tags: ${{ env.IMAGE_FQDN }}:${{ github.ref_name }}
           build-args: |
-            TRAEFIK_VERSION=${{ github.tag }}
+            TRAEFIK_VERSION=${{ github.ref_name }}
