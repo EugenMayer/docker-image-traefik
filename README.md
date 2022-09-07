@@ -8,7 +8,6 @@
 The amd64 image is published on
 
 - `ghcr.io/eugenmayer/traefik:2.x` [github packages](https://github.com/EugenMayer/docker-image-traefik/pkgs/container/traefik)
-- `eugenmayer/traefik:2.x` [hub.docker.com](https://hub.docker.com/r/eugenmayer/traefik) [deprecated]
 
 ### WAT: Detailed
 
