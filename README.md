@@ -120,7 +120,7 @@ Your admin dashboard will be accessible on either the `http` or the `https` enpo
 - TRAEFIK_ADMIN_SSL_CRT_FILE="/mnt/certs/ssl.cert" # Default admin backend crt file - cert will be auto-generated. Use /mnt/certs/custom.cert and put it on the volume to have your own
 - TRAEFIK_ADMIN_AUTH_METHOD="basic" # Auth method to use on api, rest, ping and webui. basic | digest
 - TRAEFIK_ADMIN_AUTH_USERS="" # Basic or digest users created with htpasswd or htdigest.
-
+- TRAEFIK_ADMIN_GENERATE_RULE="false" # true by default, disables automatic rule generate if admin endpoint is enabled
 #### ACME
 
 For configuring your endpoints with SSL Certificates, ACME is one of the power features of [Traefik](https://traefik.io)

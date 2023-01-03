@@ -19,7 +19,7 @@ if env_TRAEFIK_ADMIN_DOMAIN != "" && env_TRAEFIK_ADMIN_DOMAIN != nil
 end
 -%>
 
-<%- if env_TRAEFIK_ADMIN_ENABLE == "true" -%>
+<%- if env_TRAEFIK_ADMIN_ENABLE == "true" && env_TRAEFIK_ADMIN_GENERATE_RULE == "true"-%>
 [http.routers]
 <%- if env_TRAEFIK_ADMIN_SSL == "true" -%>
   [http.routers.my-api-https]
