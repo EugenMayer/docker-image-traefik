@@ -126,11 +126,11 @@ Your admin dashboard will be accessible on either the `http` or the `https` enpo
 For configuring your endpoints with SSL Certificates, ACME is one of the power features of [Traefik](https://traefik.io)
 The name of the resolve will be `default` - so this is what you will need to set your router to using `routers.myroouter.tls.certresolver: default`
 
-- TRAEFIK_ACME_ENABLE="false" # Enable/disable traefik ACME feature. [acme](https://docs.traefik.io/configuration/acme/) - the resolver will be named `default`
+- TRAEFIK_ACME_ENABLE="false" # Enable/disable traefik ACME feature. [acme](https://doc.traefik.io/traefik/https/acme/) - the resolver will be named `default`
 - TRAEFIK_ACME_CHALLENGE="http" # Set http | dns to activate traefik acme challenge mode.
-- TRAEFIK_ACME_CHALLENGE_HTTP_ENTRYPOINT="http" # Set traefik acme http challenge entrypoint. [acme http challenge](https://docs.traefik.io/configuration/acme/#acmehttpchallenge)
+- TRAEFIK_ACME_CHALLENGE_HTTP_ENTRYPOINT="http" # Set traefik acme http challenge entrypoint. [acme http challenge](https://doc.traefik.io/traefik/https/acme/#httpchallenge)
 - TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER="" # Set traefik acme dns challenge provider. You need to manually add configuration env variables accordingly the dns provider you use. [acme dns provider](https://docs.traefik.io/configuration/acme/#provider)
-- TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS="" # Set you credentials needed for your DNS provider. Use a `key1=value1;key2=value2` syntax, e.g. for Cloudflare `CF_DNS_API_TOKEN=<token>` - see [the traefik documentation](https://docs.traefik.io/configuration/acme/#provider) for the avaiable keys
+- TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS="" # Set you credentials needed for your DNS provider. Use a `key1=value1;key2=value2` syntax, e.g. for Cloudflare `CF_DNS_API_TOKEN=<token>` - see [the traefik documentation](https://doc.traefik.io/traefik/providers/overview/#supported-providers) for the avaiable keys
 - TRAEFIK_ACME_CHALLENGE_DNS_DELAY="" # Set traefik acme dns challenge delayBeforeCheck. [acme dns challenge](https://docs.traefik.io/configuration/acme/#acmednschallenge)
 - TRAEFIK_ACME_EMAIL="test@traefik.io" # Default email
 - TRAEFIK_ACME_CASERVER="https://acme-v02.api.letsencrypt.org/directory" # ACME caServer parameter
