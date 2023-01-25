@@ -186,7 +186,7 @@ You `.env` file should like like this, for other provider see the [documentation
 ```dotenv
 YOUR_DOMAIN=company.com
 TRAEFIK_ACME_CHALLENGE_DNS_PROVIDER=cloudflare
-TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS=CLOUDFLARE_EMAIL=aasdas@gmx.de;CLOUDFLARE_DNS_API_TOKEN=token123
+TRAEFIK_ACME_CHALLENGE_DNS_CREDENTIALS=CF_DNS_API_TOKEN=token123
 ```
 
 Then start the stack and wait for about 3 minutes for all certificates to get installed
