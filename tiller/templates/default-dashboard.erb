@@ -28,11 +28,9 @@ end
   middlewares = [<%= middlewaresHttps.join(",") %>]
   [http.routers.my-api-https.tls]
     options = "dashboard"
-<% end -%>
-
-<%- if env_TRAEFIK_ACME_ENABLE == "true" -%>
-[http.router.my-api-https.tls]
-  certResolver = "default"
+    <%- if env_TRAEFIK_ACME_ENABLE == "true" -%>
+    certResolver = "default"
+    <% end -%>
 <% end -%>
 
 [http.routers.my-api-http]
