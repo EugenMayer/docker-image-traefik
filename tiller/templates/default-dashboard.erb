@@ -20,22 +20,26 @@ end
 -%>
 
 <%- if env_TRAEFIK_ADMIN_ENABLE == "true" && env_TRAEFIK_ADMIN_GENERATE_RULE == "true"-%>
-[http.routers]
 <%- if env_TRAEFIK_ADMIN_SSL == "true" -%>
-  [http.routers.my-api-https]
-    entryPoints = ["https"]
-    rule = "<%=dashboardRule %>"
-    service = "api@internal"
-    middlewares = [<%= middlewaresHttps.join(",") %>]
-    [http.routers.my-api-https.tls]
-      options = "dashboard"
+[http.routers.my-api-https]
+  entryPoints = ["https"]
+  rule = "<%=dashboardRule %>"
+  service = "api@internal"
+  middlewares = [<%= middlewaresHttps.join(",") %>]
+  [http.routers.my-api-https.tls]
+    options = "dashboard"
 <% end -%>
 
-  [http.routers.my-api-http]
-    entryPoints = ["http"]
-    rule = "<%=dashboardRule %>"
-    service = "api@internal"
-    middlewares = [<%= middlewaresHttp.join(",") %>]
+<%- if env_TRAEFIK_ACME_ENABLE == "true" -%>
+[http.router.my-api-https.tls]
+  certResolver = "default"
+<% end -%>
+
+[http.routers.my-api-http]
+  entryPoints = ["http"]
+  rule = "<%=dashboardRule %>"
+  service = "api@internal"
+  middlewares = [<%= middlewaresHttp.join(",") %>]
 
 [http.middlewares]
   [http.middlewares.dashboard-ssl-redirect.redirectScheme]
