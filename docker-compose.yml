@@ -1,5 +1,5 @@
 # that is just a test-setup for development of the image and different tests - change it for your needs
-version: '2'
+version: '3'
 
 services:
   traefik:
