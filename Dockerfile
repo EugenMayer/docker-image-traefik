@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source https://github.com/eugenmayer/docker-image
 ADD bin/ /usr/local/bin/
 ADD configuration-entrypoint.sh /configuration-entrypoint.sh
 RUN mkdir -p /etc/traefik /mnt/acme /mnt/filestorage /mnt/certs /usr/local/bin /etc/tiller \
- && apk --update add bash ruby openssl \
+ && apk --update add bash ruby openssl git \
  && chmod +x /usr/local/bin/*.sh /configuration-entrypoint.sh \
  # we use tiller for generating our configuration
  # we use json_pure so we do not need compile tools for the native C extension
