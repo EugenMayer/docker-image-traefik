@@ -12,7 +12,7 @@ RUN mkdir -p /etc/traefik /mnt/acme /mnt/filestorage /mnt/certs /usr/local/bin /
  # we use json_pure so we do not need compile tools for the native C extension
  && gem install --no-document specific_install json_pure \
  # use our fork of tiller for ruby 3.x support
- && gem install https://github.com/EugenMayer/tiller
+ && gem specific_install https://github.com/EugenMayer/tiller
 
 # tiller templates
 ADD tiller/ /etc/tiller/
