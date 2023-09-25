@@ -6,13 +6,14 @@ LABEL org.opencontainers.image.source https://github.com/eugenmayer/docker-image
 ADD bin/ /usr/local/bin/
 ADD configuration-entrypoint.sh /configuration-entrypoint.sh
 RUN mkdir -p /etc/traefik /mnt/acme /mnt/filestorage /mnt/certs /usr/local/bin /etc/tiller \
- && apk --update add bash ruby openssl git \
+ && apk --no-cache --update add bash ruby openssl git \
  && chmod +x /usr/local/bin/*.sh /configuration-entrypoint.sh \
  # we use tiller for generating our configuration
  # we use json_pure so we do not need compile tools for the native C extension
  && gem install --no-document specific_install json_pure \
  # use our fork of tiller for ruby 3.x support
- && gem specific_install https://github.com/EugenMayer/tiller
+ && gem specific_install https://github.com/EugenMayer/tiller \
+ && apk del git # keep the image small
 
 # tiller templates
 ADD tiller/ /etc/tiller/
